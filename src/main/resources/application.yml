@@ -1,0 +1,82 @@
+# ppkt hevh xvsz pgbq 
+spring:
+  config: 
+    import: classpath:env.yml
+  # mail: 
+  #   host: smtp.gmail.com
+  #   port: 587
+  #   username: abdelrhmansasalh@gmail.com
+  #   password: cwuf mpxa nkgy zqof
+  #   properties:
+  #     mail.smtp.auth: true
+  #     mail.smtp.starttls.enable: true
+      # default-encoding: UTF-8
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=school;encrypt=false;trustServerCertificate=true
+    username: rami
+    password: pass123
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        # dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: false
+        # transaction:
+          # jta:
+            # platform: org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform
+    database: sqlserver
+    # database-platform: org.hibernate.dialect.SQLServerDialect
+
+jwt:
+  public:
+    key: -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1qhjUsgqLsYvzcM9ipB3
+        2s88DUFEiGgBnHYK8VWit//04Kq8opon8HkSsTUWqJ9p7v/43EqNwf0RvuW4J74L
+        GWxMid0aG22x776QN5N44fvNa7t7fhY78AqVgMoJhwNr5ETPIAqrD7z8ta4DWozi
+        2mhEgzvLTGdVdzcxbTycnR/PziW4ZuFLocj35L5CVbQZKykOFte68dVkF7lR7pF5
+        RZjWKo2aWAPUb4BJqcc2hr+HeIi1YuXD96orV5Rlis5uWNyEjRSt3kjLNZCahWcS
+        pAC7YocLfa6Xt+sXVnL1zwdcFJj+Bn8gRKePNTqQIOe/SwoGYij1eon1nL5rCoTo
+        KwIDAQAB
+        -----END PUBLIC KEY-----
+
+  private: 
+    key: -----BEGIN PRIVATE KEY-----
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDWqGNSyCouxi/N
+        wz2KkHfazzwNQUSIaAGcdgrxVaK3//TgqryimifweRKxNRaon2nu//jcSo3B/RG+
+        5bgnvgsZbEyJ3RobbbHvvpA3k3jh+81ru3t+FjvwCpWAygmHA2vkRM8gCqsPvPy1
+        rgNajOLaaESDO8tMZ1V3NzFtPJydH8/OJbhm4UuhyPfkvkJVtBkrKQ4W17rx1WQX
+        uVHukXlFmNYqjZpYA9RvgEmpxzaGv4d4iLVi5cP3qitXlGWKzm5Y3ISNFK3eSMs1
+        kJqFZxKkALtihwt9rpe36xdWcvXPB1wUmP4GfyBEp481OpAg579LCgZiKPV6ifWc
+        vmsKhOgrAgMBAAECggEABPcJis1ZlG1ihxrbsIwUUsLje7JuoYPuVsCLpRtfikdo
+        5HIA09KQIICA+y2/mpBLFx2s3J77HvuwhT7X2lALtWQdc/Nz+mvc+ZzFM8GYeTCB
+        GSStJGtQqiqNpdg9Vr8eOivaaXUskbwxdeUuEBtmaQMiY7GLFK4LMU+4gRfkhcCs
+        wuu1Fq3I31iBJ6DDuO1+rZ1RK8qc0C2vgED8aIOHC3gRtvGamWyvZSFjEZZNDkMD
+        +6zfLRJ1WkLXP3HhgPFUw0i0wGUYacIBNu8Hl9qJDSPnMgfHb+eKFKp2bAz1KtR9
+        lBPFHqg1v/1TeM2Adlat4myK/xCMPXRBcNrQJvNMyQKBgQD0MMij/8ENV4UokqmD
+        6OTjAasUY0ksN1VI0GShzoagLHzjgn7aUbadsEjQaAMgSaUlTystIbe7KSIkb3pk
+        1/i2JjL5OMVSSbpd30Fta+Za1N4PXYI9kTzlDQmDPhofQxQNMeAJvn/IZmHyn/0A
+        cL8AlPCSiiWsB/bpHZcJRuRKpwKBgQDhCfi9DNHo70t4QIHCBgU/bp0V9Wism4j3
+        dj7va2X/dXfP/EBhwog7bzQorkUl/o6CIeL/bARMF9E8TBsY2rHSV88y5A3KtHPe
+        f3/MIhgTa/YmtgjsYC4ZgXY0D0ivZu07WCH3FIFcg9XOgHj2d6HkSDTDsccjR7D7
+        kNfvIjia3QKBgQCFIi/SEjeb4ZKs60FWtNxN0/QFWphjbgumdk/XVDVcEMVKeTRW
+        LWTmFl2smnjR2rUaYU6F/bMhbKy7trfBUWq9TJhP/p6+XYopcfZHBSQDc7laIT5H
+        +O59Zx0/m9U8JCNDimS+i0k55nASix2yZsYMOCftjTo6z+DTehmFqkv/UwKBgQCu
+        M7XlQoNLudHGKMlJlLeDPvFDClIZK91/En3tgEnY0uoIitCb3Kbwu0i5JQ5KNx/C
+        BNFfwBIjhVxnPNLNDp4QogC2+Grku4PmfPRE5S+V+UD2/nsx39JP1DPYYOx3O0nx
+        YmwIhEsPfs6HqFP7FuivemW+B2SMHvcWBi3h46/F0QKBgC7xNv5h1t6kKICzKjB/
+        ahinP2lqPcNinbdyMTM/z0oPqYXvurEWXO2ME3NZc6UWPBW7c8H1k2p0sQ4Z3iAD
+        cxZvR7DXBQ5xYHOsCvxny3OsSk9Ch5Ei/auIeIleQ3rn13bpSa/+MyaWwx8hPQlf
+        NIy4HYpntjXmLlNJcsAwYUBZ
+        -----END PRIVATE KEY-----
+
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400 # a day
+      refresh-token:
+        expiration: 604800 # 7 days
