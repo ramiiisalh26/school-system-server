@@ -1,6 +1,5 @@
-package com.example.school.subjects;
+package com.example.school.Courses;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.example.school.teacher.TeacherDTO;
@@ -10,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SubjectsDTO {
+public class CoursesDTO {
     Long id;
     String name;
     List<TeacherDTO> teachers;

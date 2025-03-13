@@ -65,13 +65,12 @@ public class AssignmentServicesImpl implements IAssignmentServices{
     public AssignmentDTO updateAssignment(Long id, AssignmentDTO assignmentDTO) {
         Assignment assignment = assignmentRespositry.findById(id).orElseThrow();
 
-        if (assignment != null) {
             assignment.setClasses(assignmentDTO.getClasses());
-            assignment.setSubjects(assignmentDTO.getSubjects());
+            assignment.setCourses(assignmentDTO.getSubjects());
             assignment.setTeacher(assignmentDTO.getTeacher());
             assignment.setDueDate(assignmentDTO.getDueDate());
             assignmentRespositry.save(assignment);
-        }
+
         return AssignmentMapper.fromEntityToDTO(assignment);
     }
 

@@ -3,6 +3,8 @@ package com.example.school.teacher;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.school.classes.ClassesDTO;
+import com.example.school.Courses.CoursesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class TeacherController {
     public TeacherController(final ITeacherServices teacherServices){
         this.teacherServices = teacherServices;
     }
+
+    public  TeacherController(){}
 
     @PostMapping(path = "/add")
     public ResponseEntity<List<TeacherDTO>> addTeachers(@RequestBody final List<TeacherDTO> teachersDTO){
@@ -63,5 +67,13 @@ public class TeacherController {
         return new ResponseEntity<TeacherDTO>(HttpStatus.OK);
     }
 
-    
+    @GetMapping(path = "/getTeacherSubjects/{id}")
+    public ResponseEntity<List<CoursesDTO>> getTeacherSubjects(@PathVariable final Long id){
+        return new ResponseEntity<>(teacherServices.getTeacherCourses(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getTeacherClasses")
+    public  ResponseEntity<List<ClassesDTO>> getTeacherClasses(Long id){
+        return new ResponseEntity<>(teacherServices.getTeacherClasses(id),HttpStatus.OK);
+    }
 }

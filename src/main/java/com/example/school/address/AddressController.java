@@ -19,18 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/address")
 public class AddressController {
     
-    private IAddressServices addressServices;
+    private final IAddressServices addressServices;
 
     @Autowired
     public AddressController(final IAddressServices addressServices){
         this.addressServices = addressServices;
     }
 
-    @PostMapping(path = "/add")
-    public ResponseEntity<AddressDTO> addAddress(@RequestBody final AddressDTO addressDTO){
-        AddressDTO savedAddress = addressServices.addAddress(addressDTO);
-        return new ResponseEntity<AddressDTO>(savedAddress,HttpStatus.CREATED);
-    }
+//    @PostMapping(path = "/add")
+//    public ResponseEntity<AddressDTO> addAddress(@RequestBody final AddressDTO addressDTO){
+//        AddressDTO savedAddress = addressServices.addAddress(addressDTO);
+//        return new ResponseEntity<AddressDTO>(savedAddress,HttpStatus.CREATED);
+//    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable final Long id){

@@ -1,5 +1,7 @@
 package com.example.school.student;
 
+import com.example.school.classes.ClassesDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +9,7 @@ public interface IStudentServices {
     
     Boolean isExists(StudentDTO studentDTO);
 
-    StudentDTO addStudent(StudentDTO studentDTO);
+    void addStudent(StudentDTO studentDTO);
     
     List<StudentDTO> addManyStudent(List<StudentDTO> studentsDTO);
 
@@ -19,5 +21,5 @@ public interface IStudentServices {
 
     StudentDTO updateStudentById(Long id,StudentDTO studentDTO); 
 
-
+    List<ClassesDTO> getStudentClasses(Long id);
 }

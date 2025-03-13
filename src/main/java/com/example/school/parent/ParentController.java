@@ -3,6 +3,7 @@ package com.example.school.parent;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.school.student.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/v1/parent")
 public class ParentController {
     
-    private IParentServices parentServices;
+    private final IParentServices parentServices;
 
     @Autowired
     public ParentController(final IParentServices parentServices){
@@ -27,7 +28,7 @@ public class ParentController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<List<ParentDTO>> addParent(@RequestBody final List<ParentDTO> parentsDTO){
+    public ResponseEntity<List<ParentDTO>> addParent(@RequestBody final List<ParentDTO> parentsDTO) throws Exception{
         final List<ParentDTO> savedParents = parentServices.addManyParent(parentsDTO);
         return new ResponseEntity<List<ParentDTO>>(savedParents,HttpStatus.CREATED);
     }
@@ -35,10 +36,7 @@ public class ParentController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<ParentDTO> getParentById(@PathVariable final Long id){
         Optional<ParentDTO> parent = parentServices.getParentById(id);
-        if (parent.isPresent()) {
-            return new ResponseEntity<ParentDTO>(parent.get(),HttpStatus.OK);
-        }
-        return new ResponseEntity<ParentDTO>(HttpStatus.NOT_FOUND);
+        return parent.map(parentDTO -> new ResponseEntity<>(parentDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(path = "/all")
@@ -60,5 +58,10 @@ public class ParentController {
     public ResponseEntity<ParentDTO> deleteParent(@PathVariable final Long id){
         parentServices.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getStudentByParentId/{id}")
+    public  ResponseEntity<List<StudentDTO>> getStudentByParentId(@PathVariable final Long parentId){
+        return new ResponseEntity<>(parentServices.getStudentByParentId(parentId),HttpStatus.OK);
     }
 }

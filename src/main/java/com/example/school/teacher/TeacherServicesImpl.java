@@ -5,48 +5,42 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.school.address.Address;
+import com.example.school.address.IAddressRespositry;
+import com.example.school.classes.*;
+import com.example.school.Courses.*;
+import com.example.school.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.school.address.Address;
-import com.example.school.address.AddressDTO;
-import com.example.school.address.AddressMapper;
-import com.example.school.address.IAddressServices;
-import com.example.school.classes.ClassesDTO;
-import com.example.school.classes.IClassesServices;
 import com.example.school.security.token.ITokenServices;
-import com.example.school.subjects.ISubjectsServices;
-import com.example.school.subjects.SubjectsDTO;
-import com.example.school.user.IUserServices;
-import com.example.school.user.Role;
-import com.example.school.user.User;
 
 @Service
 public class TeacherServicesImpl implements ITeacherServices{
 
-    private ITeacherRepositry IteacherRepositry;
-    private IAddressServices IaddressServices;
-    private ISubjectsServices IsubjectsServices;
-    private IClassesServices IclassesServices;
-    private IUserServices IuserServices;
-    private PasswordEncoder passwordEncoder;
-    private ITokenServices ItokenServices;
+    private final ITeacherRepositry IteacherRepositry;
+    private final IAddressRespositry IaddressRepositry;
+    private final ICoursesRepositry ICoursesRepositry;
+    private final IClassesRepositry IclassesRepositry;
+    private final IUserServices IuserServices;
+    private final PasswordEncoder passwordEncoder;
+    private final ITokenServices ItokenServices;
 
     @Autowired
     public TeacherServicesImpl(
         final ITeacherRepositry IteacherRepositry,
-        final IAddressServices IaddressServices,
-        final ISubjectsServices IsubjectsServices,
-        final IClassesServices IclassesServices,
+        final IAddressRespositry IaddressRepositry,
+        final ICoursesRepositry ICoursesRepositry,
+        final IClassesRepositry IclassesRepositry,
         final IUserServices IuserServices,
         final PasswordEncoder passwordEncoder,
         final ITokenServices ItokenServices){
 
         this.IteacherRepositry = IteacherRepositry;
-        this.IaddressServices = IaddressServices;
-        this.IsubjectsServices = IsubjectsServices;
-        this.IclassesServices = IclassesServices;
+        this.IaddressRepositry = IaddressRepositry;
+        this.ICoursesRepositry = ICoursesRepositry;
+        this.IclassesRepositry = IclassesRepositry;
         this.IuserServices = IuserServices;
         this.ItokenServices = ItokenServices;
         this.passwordEncoder = passwordEncoder;
@@ -66,11 +60,13 @@ public class TeacherServicesImpl implements ITeacherServices{
     }
 
     @Override
-    public TeacherDTO addTeacher(TeacherDTO teacherDTO) {
+    public void addTeacher(TeacherDTO teacherDTO) {
         
         if (teacherDTO == null) {
             throw new RuntimeException("Teacher must be provided");
         }
+
+        Teacher teacher = TeacherMapper.fromDTOToEntity(teacherDTO);
 
         User user = User.builder()
             .first_name(teacherDTO.getFirst_name())
@@ -81,48 +77,49 @@ public class TeacherServicesImpl implements ITeacherServices{
             .build();
 
         User savedUser = IuserServices.signUp(user);
-        Address address = AddressMapper.fromDTOToEntity(teacherDTO.getAddress());
-        address.setUser(savedUser);
-        AddressDTO savedAddress = IaddressServices.addAddress(AddressMapper.fromEntityToDTO(address));
 
-        teacherDTO.setAddress(savedAddress);
+        Address address = Address.builder()
+                .country(teacherDTO.getAddress().getCountry())
+                .city(teacherDTO.getAddress().getCity())
+                .street(teacherDTO.getAddress().getStreet())
+                .zip(teacherDTO.getAddress().getZip())
+                .state(teacherDTO.getAddress().getState())
+                .user(savedUser)
+                .build();
 
-        List<SubjectsDTO> subjectsDTOs = new ArrayList<>();
+        Address savedAddress = IaddressRepositry.save(address);
 
-        for (SubjectsDTO sub : teacherDTO.getSubjects()) {
-            SubjectsDTO subjectsDTO = IsubjectsServices.getSubjectByName(sub.getName());
-            subjectsDTOs.add(subjectsDTO);
+        teacher.setAddress(savedAddress);
+
+        List<Courses> Courses = new ArrayList<>();
+
+        for (Courses sub : teacher.getCourses()) {
+            Courses subject = ICoursesRepositry.getSubjectByName(sub.getName());
+            Courses.add(subject);
         }
 
-        teacherDTO.setSubjects(subjectsDTOs);
+//        teacher.(Courses);
 
-        List<ClassesDTO> classesList = new ArrayList<>();
-        for (ClassesDTO classes : teacherDTO.getClasses()) {
-            ClassesDTO classesDTO = IclassesServices.getClassesByName(classes.getName());
-            classesList.add(classesDTO);
+        List<Classes> classesList = new ArrayList<>();
+        for (Classes classes : teacher.getClasses()) {
+            Classes classed = IclassesRepositry.getClassesByName(classes.getName());
+            classesList.add(classed);
         }
-        teacherDTO.setClasses(classesList);
-        
-        Teacher teacher = TeacherMapper.fromDTOToEntity(teacherDTO);
+        teacher.setClasses(classesList);
 
         Teacher savedTeacher = IteacherRepositry.save(teacher);
-
-        return TeacherMapper.fromEntityToDTO(savedTeacher);
     }
 
     @Override
     public Optional<TeacherDTO> getTeacherById(Long id) {
         Optional<Teacher> teacher = IteacherRepositry.findById(id);
-        if (teacher.isPresent()) {
-            return Optional.of(TeacherMapper.fromEntityToDTO(teacher.get()));
-        }
-        return Optional.empty();
+        return teacher.map(TeacherMapper::fromEntityToDTO);
     }
 
     @Override
     public List<TeacherDTO> getAllTeacher() {
         List<Teacher> teachers = IteacherRepositry.findAll();
-        List<TeacherDTO> teachersDTO = teachers.stream().map(teacher -> TeacherMapper.fromEntityToDTO(teacher)).collect(Collectors.toList());
+        List<TeacherDTO> teachersDTO = teachers.stream().map(TeacherMapper::fromEntityToDTO).collect(Collectors.toList());
         System.out.println(teachersDTO);
         return teachersDTO;
     }
@@ -130,53 +127,31 @@ public class TeacherServicesImpl implements ITeacherServices{
     @Override
     public TeacherDTO updateTeacher(Long id, TeacherDTO teacherDTO) {
         Teacher teacher = IteacherRepositry.findById(id).orElseThrow();
-        AddressDTO address = IaddressServices.getAddressById(teacher.getAddress().getId()).orElseThrow();
-        List<ClassesDTO> classes = IclassesServices.getAllClasses();
-        List<SubjectsDTO> subjects = IsubjectsServices.getAllSubjects();
-        System.out.println(teacherDTO.getClasses().size());
-        int idx = 0;
-        if (!classes.isEmpty()) {
-            for (int i = 0; i < classes.size(); i++) {
-                if (classes.get(i).getId() == teacherDTO.getClasses().get(idx).getId()) {
-                    System.out.println("World");
-                    classes.get(i).setCapacity(teacherDTO.getClasses().get(idx).getCapacity());
-                    classes.get(i).setGrade(teacherDTO.getClasses().get(idx).getGrade());
-                    classes.get(i).setSuper_visor(teacherDTO.getClasses().get(i).getSuper_visor());
-                    IclassesServices.createClass(classes.get(i));
-                    idx++;
-                }
-            }    
-        }
-        idx = 0;
-        if (!subjects.isEmpty()) {
-            for (int i = 0; i < subjects.size(); i++) {
-                if (subjects.get(i).getId() == teacherDTO.getSubjects().get(idx).getId()) {
-                    subjects.get(i).setName(teacherDTO.getSubjects().get(idx).getName());
-                    IsubjectsServices.addSubject(subjects.get(idx));
-                    idx = 0;
-                }
-            }
-        }
 
-        if (address != null) {
-            address.setCity(teacherDTO.getAddress().getCity());
-            address.setCountry(teacherDTO.getAddress().getCountry());
-            address.setState(teacherDTO.getAddress().getState());
-            address.setStreet(teacherDTO.getAddress().getStreet());
-            address.setZip(teacherDTO.getAddress().getZip());
-            IaddressServices.addAddress(address);
-        }
+        Address gterAddress = IaddressRepositry.findById(teacherDTO.getAddress().getId()).get();
 
-        if (teacher != null) {
-            teacher.setFirst_name(teacherDTO.getFirst_name());
-            teacher.setMiddle_name(teacherDTO.getMiddle_name());
-            teacher.setLast_name(teacher.getLast_name());
-            teacher.setPhone(teacherDTO.getPhone());
-            teacher.setPhoto(teacherDTO.getPhoto());
-            teacher.setTeacher_id(teacherDTO.getTeacher_id());
-            teacher.setEmail(teacherDTO.getEmail());
-            IteacherRepositry.save(teacher);
-        }
+        teacher.setClasses(teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()));
+        teacher.setCourses(teacherDTO.getCoursesDTO().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()));
+
+        Address address = Address.builder()
+                .state(teacherDTO.getAddress().getState())
+                .country(teacherDTO.getAddress().getCountry())
+                .city(teacherDTO.getAddress().getCity())
+                .street(teacherDTO.getAddress().getStreet())
+                .zip(teacherDTO.getAddress().getZip())
+                .build();
+
+        teacher.setAddress(address);
+
+        teacher.setFirst_name(teacherDTO.getFirst_name());
+        teacher.setMiddle_name(teacherDTO.getMiddle_name());
+        teacher.setLast_name(teacher.getLast_name());
+        teacher.setPhone(teacherDTO.getPhone());
+        teacher.setPhoto(teacherDTO.getPhoto());
+        teacher.setTeacher_id(teacherDTO.getTeacher_id());
+        teacher.setEmail(teacherDTO.getEmail());
+
+        IteacherRepositry.save(teacher);
 
         return TeacherMapper.fromEntityToDTO(teacher);
     }
@@ -185,25 +160,16 @@ public class TeacherServicesImpl implements ITeacherServices{
     public void deleteTeacher(Long id) {
         Teacher teacher = IteacherRepositry.findById(id).get();
         
-        teacher.getClasses().forEach(cla ->{
-            Long idClass = cla.getId();
-            cla.setTeacher(null);
-            IclassesServices.setTeacherIdToBeNull(idClass);
-        });
+        teacher.getClasses().forEach(cla -> cla.setTeacher(null));
 
-        teacher.getSubjects().forEach(sub -> {
-            sub.setTeachers(null);
-        });
+        teacher.getCourses().forEach(sub -> sub.setTeachers(null));
 
         Long idAddress = teacher.getAddress().getId();
         Long idUser = teacher.getAddress().getUser().getId();
-        
-        IaddressServices.setUserIdToBeNull(idUser);
-        IteacherRepositry.setAddressIdToBeNull(idAddress);
 
-        IaddressServices.deleteAddressById(idAddress);
-        
         teacher.setAddress(null);
+
+        IaddressRepositry.deleteById(idAddress);
 
         IuserServices.deleteUserById(idUser);
 
@@ -211,16 +177,26 @@ public class TeacherServicesImpl implements ITeacherServices{
             ItokenServices.deleteAllTokenByUserId(idUser);            
         }
 
-
-        IteacherRepositry.save(teacher);
         IteacherRepositry.deleteById(id);
     }
 
 
+//    @Override
+//    public TeacherDTO addTeacherCourses() {
+//        // TODO Auto-generated method stub
+//        throw new UnsupportedOperationException("Unimplemented method 'addTeacherCourses'");
+//    }
+
     @Override
-    public TeacherDTO addTeacherSubjects() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addTeacherSubjects'");
+    public List<CoursesDTO> getTeacherCourses(Long id){
+        List<Courses> Courses = IteacherRepositry.getTeacherByCourseId(id);
+        return  Courses.stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassesDTO> getTeacherClasses(Long id){
+        List<Classes> classes = IteacherRepositry.getTeacherByClassesId(id);
+        return  classes.stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
     
 }

@@ -3,6 +3,7 @@ package com.example.school.user;
 import java.security.Principal;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,32 +11,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServicesImpl implements IUserServices{
+public class UserServicesImpl implements IUserServices {
+
+
 
     private final PasswordEncoder passwordEncoder;
     private final IUserRepositry userRepositry;
 
     @Autowired
-    public UserServicesImpl(final PasswordEncoder passwordEncoder,final IUserRepositry userRepositry){
+    public UserServicesImpl(final PasswordEncoder passwordEncoder, final IUserRepositry userRepositry) {
         this.userRepositry = userRepositry;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public User signUp(User user) {
-        
+
         boolean isUserExist = userRepositry.findByUsername(user.getUsername()).isPresent();
 
         if (isUserExist) {
             throw new IllegalStateException("Email already taken");
         }
-
         User savedUser = userRepositry.save(user);
-
         return savedUser;
     }
 
-    
+
     @Override
     public int enableUser(String username) {
         return userRepositry.enableUser(username);
@@ -49,6 +51,11 @@ public class UserServicesImpl implements IUserServices{
     @Override
     public UserDetails getUser(String username) {
         return userRepositry.findByUsername(username).orElseThrow();
+    }
+
+    @Override
+    public Optional<User> getUserById(Long id) {
+        return userRepositry.findById(id);
     }
 
 
@@ -87,8 +94,8 @@ public class UserServicesImpl implements IUserServices{
     }
 
     @Override
-    public void deleteUserById(Long id){
+    public void deleteUserById(Long id) {
         userRepositry.deleteById(id);
     }
-    
+
 }

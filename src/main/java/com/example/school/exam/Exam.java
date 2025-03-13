@@ -3,7 +3,7 @@ package com.example.school.exam;
 import java.util.Date;
 
 import com.example.school.classes.Classes;
-import com.example.school.subjects.Subjects;
+import com.example.school.Courses.Courses;
 import com.example.school.teacher.Teacher;
 
 import jakarta.persistence.Entity;
@@ -36,7 +36,7 @@ public class Exam {
     private Long id;
 
     @OneToOne
-    private Subjects subjects;
+    private Courses subjects;
 
     @OneToOne
     private Classes classes;

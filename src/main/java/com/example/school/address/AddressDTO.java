@@ -14,5 +14,5 @@ public class AddressDTO {
     String state;
     String zip;
     String country;
-    UserDTO userDTO;
+//    UserDTO userDTO;
 }

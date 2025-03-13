@@ -1,5 +1,7 @@
 package com.example.school.address;
 
+import com.example.school.user.UserMapper;
+
 public class AddressMapper {
     public static Address fromDTOToEntity(AddressDTO addressDTO){
         return Address.builder()
@@ -9,7 +11,7 @@ public class AddressMapper {
             .state(addressDTO.getState())
             .country(addressDTO.getCountry())
             .zip(addressDTO.getZip())
-            // .user(addressDTO.getUser())
+//             .user(UserMapper.fromDTOToEntity(addressDTO.getUserDTO()))
             .build();
     }
 
@@ -21,7 +23,7 @@ public class AddressMapper {
             .state(address.getState())
             .country(address.getCountry())
             .zip(address.getZip())
-            // .user(address.getUser())
+//             .userDTO(UserMapper.fromEntityToDTO(address.getUser()))
             .build();
     }
 }

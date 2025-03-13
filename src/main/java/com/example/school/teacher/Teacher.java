@@ -5,7 +5,8 @@ import java.util.List;
 // import com.example.school.address.Address;
 import com.example.school.address.Address;
 import com.example.school.classes.Classes;
-import com.example.school.subjects.Subjects;
+import com.example.school.result.Result;
+import com.example.school.Courses.Courses;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -86,17 +87,23 @@ public class Teacher {
     private String phone;
     
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "teacher_subject",
+    @JoinTable(name = "teacher_courses",
             joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private List<Subjects> subjects;
+            inverseJoinColumns = @JoinColumn(name = "courses_id"))
+    private List<Courses> courses;
     
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "teacher_classes",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "classes_id")
+    )
     @ToString.Exclude
     private List<Classes> classes;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Address address;
+
+    @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
+    private List<Result> result;
 }

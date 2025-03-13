@@ -23,6 +23,6 @@ public interface IClassesServices {
     
     ClassesDTO getClassesByName(String name);
 
-    void setTeacherIdToBeNull(Long id);
+//    void setTeacherIdToBeNull(Long id);
 
 }

@@ -18,4 +18,10 @@ public interface IResultServices {
     ResultDTO updateResult(Long id,ResultDTO resultDTO);
 
     void deleteResultById(Long id);
+
+    List<ResultDTO> getResultsByTeacherId(Long teacherId);
+
+    List<ResultDTO> getResultsByStudentId(Long studentId);
+
+    List<ResultDTO> getResultsBySubjectId(Long subjectId);
 }

@@ -4,110 +4,156 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.school.address.*;
+import com.example.school.student.*;
+import com.example.school.user.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.school.address.Address;
-import com.example.school.address.IAddressRespositry;
-import com.example.school.student.IStudentRepositry;
-import com.example.school.student.Student;
-
 @Service
-public class ParentServicesImpl implements IParentServices{
+@Transactional
+public class ParentServicesImpl implements IParentServices {
 
-    private IParentRepositry parentRepositry;
-    private IStudentRepositry studentRepositry;
-    private IAddressRespositry addressRespositry;
 
+    private final IParentRepositry IparentRepositry;
+    private final IStudentRepositry IstudentRepositry;
+    private final IAddressRespositry IaddressRepositry;
+    private final IUserServices IuserServices;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     public ParentServicesImpl(
-        final IParentRepositry parentRepositry,
-        final IStudentRepositry studentRepositry,
-        final IAddressRespositry addressRespositry
-    ){
-        this.parentRepositry = parentRepositry;
-        this.studentRepositry = studentRepositry;
-        this.addressRespositry = addressRespositry;
+            final IParentRepositry IparentRepositry,
+            final IStudentRepositry IstudentRepositry,
+            final IAddressRespositry IaddressRepositry,
+            final IUserServices IuserServices,
+            final PasswordEncoder passwordEncoder
+    ) {
+        this.IparentRepositry = IparentRepositry;
+        this.IstudentRepositry = IstudentRepositry;
+        this.IaddressRepositry = IaddressRepositry;
+        this.IuserServices = IuserServices;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Boolean isExists(ParentDTO parentDTO) {
-        return parentRepositry.existsById(parentDTO.getId()); 
+        return IparentRepositry.existsById(parentDTO.getId());
     }
 
     @Override
     public List<ParentDTO> getAllParent() {
-        List<Parent> parents = parentRepositry.findAll();
-        List<ParentDTO> parentsDTO = parents.stream().map(parent -> ParentMapper.fromEntityToDTO(parent)).collect(Collectors.toList());
-        return parentsDTO;
+        List<Parent> parents = IparentRepositry.findAll();
+        return parents.stream().map(ParentMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<ParentDTO> addManyParent(List<ParentDTO> parentsDTO) {
+    public List<ParentDTO> addManyParent(List<ParentDTO> parentsDTO) throws Exception {
         for (ParentDTO parentDTO : parentsDTO) {
             addParent(parentDTO);
         }
         return parentsDTO;
     }
 
+
     @Override
-    public ParentDTO addParent(ParentDTO parentDTO) {
+    public void addParent(ParentDTO parentDTO) throws Exception {
+
         if (parentDTO == null) {
             throw new RuntimeException("Must be provided parent");
         }
 
-        Parent parent = ParentMapper.fromDTOToEntity(parentDTO);
+        User user = User.builder()
+                .first_name(parentDTO.getFirst_name())
+                .last_name(parentDTO.getLast_name())
+                .username(parentDTO.getEmail())
+                .password(passwordEncoder.encode("5555"))
+                .role(Role.PARENT)
+                .build();
 
-        Parent savedParent = parentRepositry.save(parent);
+        System.out.println(user);
+        User savedUser = IuserServices.signUp(user);
 
-        return ParentMapper.fromEntityToDTO(savedParent);
+        Address address = Address.builder()
+                .city(parentDTO.getAddress().getCity())
+                .state(parentDTO.getAddress().getState())
+                .country(parentDTO.getAddress().getCountry())
+                .street(parentDTO.getAddress().getStreet())
+                .zip(parentDTO.getAddress().getZip())
+                .user(savedUser)
+                .build();
+
+        Address savedAddress = IaddressRepositry.save(address);
+
+        List<Student> students = parentDTO.getStudents().stream()
+                .map(student -> IstudentRepositry.FindByStudentID(student.getStudent_id()))
+                .toList();
+
+        Parent parent = Parent.builder()
+                .first_name(parentDTO.getFirst_name())
+                .middle_name(parentDTO.getMiddle_name())
+                .last_name(parentDTO.getLast_name())
+                .email(parentDTO.getEmail())
+                .phone(parentDTO.getPhone())
+                .address(savedAddress)
+                .student(students)
+                .build();
+
+        IparentRepositry.save(parent);
     }
 
     @Override
     public ParentDTO updateParent(Long id, ParentDTO parentDTO) {
-        Parent parent = parentRepositry.findById(id).orElseThrow();
-        Student student = studentRepositry.findById(id).orElseThrow();
-        Address address = addressRespositry.findById(id).orElseThrow();
-    
-        if (parent != null) {
-            parent.setName(parentDTO.getName());
-            parent.setEmail(parentDTO.getEmail());
-            parent.setPhone(parentDTO.getPhone());
+
+        Parent parent = IparentRepositry.findById(id).orElseThrow();
+        List<Student> students = IparentRepositry.getStudentByParentId(parent.getId());
+        Address address = IaddressRepositry.findById(parent.getAddress().getId()).orElseThrow();
+
+        parent.setFirst_name(parentDTO.getFirst_name());
+        parent.setMiddle_name(parentDTO.getMiddle_name());
+        parent.setLast_name(parentDTO.getLast_name());
+        parent.setEmail(parentDTO.getEmail());
+        parent.setPhone(parentDTO.getPhone());
+
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getStudent_id().equals(parentDTO.getStudents().get(i).getStudent_id())) {
+                students.get(i).setEmail(parentDTO.getStudents().get(i).getEmail());
+                students.get(i).setPhone(parentDTO.getStudents().get(i).getPhone());
+                students.get(i).setPhoto(parentDTO.getStudents().get(i).getPhoto());
+            }
         }
 
-        int sizeOfStudent = parentDTO.getStudent().size();
-        
-        for(int i=0;i<sizeOfStudent;i++){
-            student.setName(parentDTO.getStudent().get(i).getName());
-            student.setEmail(parentDTO.getStudent().get(i).getEmail());
-            student.setPhone(parentDTO.getStudent().get(i).getPhone());
-            student.setPhoto(parentDTO.getStudent().get(i).getPhoto());
-        }
-        
-        if (address != null) {
-            address.setCity(parentDTO.getAddress().getCity());
-            address.setCountry(parentDTO.getAddress().getCountry());
-            address.setState(parentDTO.getAddress().getState());
-            address.setStreet(parentDTO.getAddress().getStreet());
-            address.setZip(parentDTO.getAddress().getZip());
-        }
+        parent.setStudent(students);
+
+        address.setCity(parentDTO.getAddress().getCity());
+        address.setCountry(parentDTO.getAddress().getCountry());
+        address.setState(parentDTO.getAddress().getState());
+        address.setStreet(parentDTO.getAddress().getStreet());
+        address.setZip(parentDTO.getAddress().getZip());
+
+        parent.setAddress(address);
+
+        IparentRepositry.save(parent);
+
         return ParentMapper.fromEntityToDTO(parent);
     }
 
     @Override
     public Optional<ParentDTO> getParentById(Long Id) {
-        Optional<Parent> parent = parentRepositry.findById(Id);
-
-        if (parent.isPresent()) {
-            return Optional.of(ParentMapper.fromEntityToDTO(parent.get()));
-        }
-
-        return Optional.empty();
+        Optional<Parent> parent = IparentRepositry.findById(Id);
+        return parent.map(ParentMapper::fromEntityToDTO);
     }
 
     @Override
     public void deleteById(Long id) {
-        parentRepositry.deleteById(id);
+        IparentRepositry.deleteById(id);
     }
-    
+
+    @Override
+    public List<StudentDTO> getStudentByParentId(Long id) {
+        List<Student> students = IparentRepositry.getStudentByParentId(id);
+        return students.stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
 }
