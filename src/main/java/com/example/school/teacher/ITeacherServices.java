@@ -1,5 +1,8 @@
 package com.example.school.teacher;
 
+import com.example.school.classes.ClassesDTO;
+import com.example.school.Courses.CoursesDTO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +12,7 @@ public interface ITeacherServices {
 
     List<TeacherDTO> addManyTeacher(List<TeacherDTO> teachersDTO);
 
-    TeacherDTO addTeacher(TeacherDTO teacherDTO);
+    void addTeacher(TeacherDTO teacherDTO);
 
     Optional<TeacherDTO> getTeacherById(Long id);
 
@@ -19,7 +22,10 @@ public interface ITeacherServices {
 
     void deleteTeacher(Long id);
 
-    TeacherDTO addTeacherSubjects();
+//    TeacherDTO addTeacherSubjects();
 
+    List<CoursesDTO> getTeacherCourses(Long id);
+
+    List<ClassesDTO> getTeacherClasses(Long id);
     // void setAddressIdToBeNull(Long id);
 }

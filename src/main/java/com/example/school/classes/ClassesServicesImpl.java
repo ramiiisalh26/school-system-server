@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClassesServicesImpl implements IClassesServices{
 
-    private IClassesRepositry classesRepositry;
+    private final IClassesRepositry classesRepositry;
 
     @Autowired
     public ClassesServicesImpl(IClassesRepositry classesRepositry){
@@ -101,8 +101,8 @@ public class ClassesServicesImpl implements IClassesServices{
         return classesDTOs;
     }
     
-    @Override 
-    public void setTeacherIdToBeNull(Long id){
-        classesRepositry.setTeacherIdToBeNull(id);
-    }
+//    @Override
+//    public void setTeacherIdToBeNull(Long id){
+//        classesRepositry.setTeacherIdToBeNull(id);
+//    }
 }

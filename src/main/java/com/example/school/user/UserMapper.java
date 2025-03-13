@@ -7,7 +7,6 @@ public class UserMapper {
             .first_name(userDTO.getFirst_name())
             .last_name(userDTO.getLast_name())
             .username(userDTO.getUsername())
-            
             .build();
     }
 

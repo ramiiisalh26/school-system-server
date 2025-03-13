@@ -1,21 +1,12 @@
 package com.example.school.parent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.school.address.Address;
 import com.example.school.student.Student;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,11 +30,26 @@ public class Parent {
     )
     private Long id;
 
+    @Version
+    private Integer version;
+
     @Column(
-        name = "name",
+        name = "first_name",
         nullable = false
     )
-    private String name;
+    private String first_name;
+
+    @Column(
+            name = "middle_name",
+            nullable = false
+    )
+    private String middle_name;
+
+    @Column(
+            name = "last_name",
+            nullable = false
+    )
+    private String last_name;
 
     @Column(
         name = "email",
@@ -60,9 +66,12 @@ public class Parent {
     @OneToOne
     private Address address;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable
-    private List<Student> student;
-
+    @ManyToMany
+    @JoinTable(
+            name = "student_parent",
+            joinColumns = @JoinColumn(name = "parent_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private List<Student> student = new ArrayList<>();
 
 }

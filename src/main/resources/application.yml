@@ -1,4 +1,6 @@
 # ppkt hevh xvsz pgbq 
+server:
+  port: 8080
 spring:
   config: 
     import: classpath:env.yml
@@ -18,7 +20,7 @@ spring:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
@@ -27,7 +29,7 @@ spring:
         # transaction:
           # jta:
             # platform: org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform
-    database: sqlserver
+#    database: sqlserver
     # database-platform: org.hibernate.dialect.SQLServerDialect
 
 jwt:

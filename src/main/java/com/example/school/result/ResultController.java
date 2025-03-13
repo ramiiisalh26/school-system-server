@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/result")
 public class ResultController {
     
-    private IResultServices resultServices;
+    private final IResultServices resultServices;
 
     @Autowired
     public ResultController(final IResultServices resultServices){
@@ -35,7 +35,7 @@ public class ResultController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<ResultDTO> getResult(@PathVariable final Long id){
         Optional<ResultDTO> result = resultServices.getResultById(id);
-        return new ResponseEntity<ResultDTO>(result.get(),HttpStatus.OK);
+        return result.map(resultDTO -> new ResponseEntity<>(resultDTO, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(path = "/all")
@@ -57,6 +57,21 @@ public class ResultController {
     public ResponseEntity<ResultDTO> deleteResultById(@PathVariable final Long id){
         resultServices.deleteResultById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getResultByTeacherId/{id}")
+    public ResponseEntity<List<ResultDTO>> getResultByTeacherId(@PathVariable final Long id){
+        return new ResponseEntity<List<ResultDTO>>(resultServices.getResultsByTeacherId(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getResultByStudentId/{id}")
+    public ResponseEntity<List<ResultDTO>> getResultByStudentId(@PathVariable final Long id){
+        return  new ResponseEntity<List<ResultDTO>>(resultServices.getResultsByStudentId(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getResultBySubjectId")
+    public ResponseEntity<List<ResultDTO>> getResultBySubjectId(@PathVariable final Long id){
+        return new ResponseEntity<List<ResultDTO>>(resultServices.getResultsBySubjectId(id),HttpStatus.OK);
     }
 
 }

@@ -4,17 +4,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.school.user.IUserServices;
+import com.example.school.user.User;
+import com.example.school.user.UserDTO;
+import com.example.school.user.UserMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AddressServicesImpl implements IAddressServices{
 
-    private IAddressRespositry addressRespositry;
+    private final IAddressRespositry addressRespositry;
+    private final IUserServices IuserServices;
 
     @Autowired
-    public AddressServicesImpl(IAddressRespositry addressRespositry){
+    public AddressServicesImpl(final IAddressRespositry addressRespositry,final IUserServices IuserServices)
+    {
         this.addressRespositry = addressRespositry;
+        this.IuserServices = IuserServices;
     }
 
     @Override
@@ -23,35 +31,52 @@ public class AddressServicesImpl implements IAddressServices{
     }
 
     @Override
-    public AddressDTO addAddress(AddressDTO addressDTO) {
+    public AddressDTO addAddress(AddressDTO addressDTO,Long userId) {
         if (addressDTO == null) {
             throw new RuntimeException("Address must be provided");
         }
-        
-        Address address = AddressMapper.fromDTOToEntity(addressDTO);
+
+        Address address = Address.builder()
+                .city(addressDTO.getCity())
+                .country(addressDTO.getCountry())
+                .state(addressDTO.getState())
+                .street(addressDTO.getStreet())
+                .zip(addressDTO.getZip())
+                .build();
 
         Address savedAddress = addressRespositry.save(address);
 
         return AddressMapper.fromEntityToDTO(savedAddress);
+    }
 
+    @Transactional
+    public  AddressDTO addAddress(AddressDTO addressDTO, UserDTO userDTO){
+        if (addressDTO == null){
+            throw new RuntimeException("Address must be provided");
+        }
+//        addressDTO.setUserDTO(userDTO);
+//        System.out.println(userDTO);
+        Address address = AddressMapper.fromDTOToEntity(addressDTO);
+        System.out.println(address);
+        Address savedAddress = addressRespositry.save(address);
+        System.out.println(savedAddress);
+        return AddressMapper.fromEntityToDTO(savedAddress);
     }
 
     @Override
     public Optional<AddressDTO> getAddressById(Long id) {
         Optional<Address> foundedAddress = addressRespositry.findById(id);
 
-        if (foundedAddress.isPresent()) {
-            return Optional.of(AddressMapper.fromEntityToDTO(foundedAddress.get()));
-        }
+        if (foundedAddress.isEmpty()) return Optional.empty();
 
-        return Optional.empty();
+        return Optional.of(AddressMapper.fromEntityToDTO(foundedAddress.get()));
+
     }
 
     @Override
     public List<AddressDTO> getAllAddress() {
         List<Address> addresses = addressRespositry.findAll();
-        List<AddressDTO> addressDTOs = addresses.stream().map(address -> AddressMapper.fromEntityToDTO(address)).collect(Collectors.toList());
-        return addressDTOs;
+        return addresses.stream().map(AddressMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -63,15 +88,13 @@ public class AddressServicesImpl implements IAddressServices{
     public AddressDTO updateAddress(Long id, AddressDTO addressDTO) {
         Address address = addressRespositry.findById(id).orElseThrow();
 
-        if (address != null) {
-            address.setCity(addressDTO.getCity());
-            address.setCountry(addressDTO.getCountry());
-            address.setState(addressDTO.getState());
-            address.setStreet(addressDTO.getStreet());
-            address.setZip(addressDTO.getZip());
-            address.setUser(address.getUser());
-            addressRespositry.save(address);
-        }
+        address.setCity(addressDTO.getCity());
+        address.setCountry(addressDTO.getCountry());
+        address.setState(addressDTO.getState());
+        address.setStreet(addressDTO.getStreet());
+        address.setZip(addressDTO.getZip());
+        address.setUser(address.getUser());
+        addressRespositry.save(address);
 
         return AddressMapper.fromEntityToDTO(address);
     }

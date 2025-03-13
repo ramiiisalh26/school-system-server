@@ -2,9 +2,9 @@ package com.example.school.result;
 
 import java.util.Date;
 
-import com.example.school.classes.Classes;
-import com.example.school.subjects.Subjects;
-import com.example.school.teacher.Teacher;
+import com.example.school.student.StudentDTO;
+import com.example.school.Courses.CoursesDTO;
+import com.example.school.teacher.TeacherDTO;
 
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +13,9 @@ import lombok.Data;
 @Builder
 public class ResultDTO {
     Long id;
-    Subjects subjects;
-    Classes classes;
-    Teacher teacher;
+    CoursesDTO coursesDTO;
+    StudentDTO studentDTO;
+    TeacherDTO teacherDTO;
     Date date;
     String type;
     int score;

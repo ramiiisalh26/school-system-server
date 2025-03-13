@@ -3,18 +3,12 @@ package com.example.school.student;
 import com.example.school.address.Address;
 import com.example.school.classes.Classes;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.example.school.parent.Parent;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,6 +26,9 @@ public class Student {
     )
     private Long id;
 
+    @Version
+    private Integer version;
+
     @Column(
         name = "student_id",
         nullable = false
@@ -39,10 +36,22 @@ public class Student {
     private String student_id;
 
     @Column(
-        name = "name",
+        name = "first_name",
         nullable = false
     )
-    private String name;
+    private String first_name;
+
+    @Column(
+            name = "middle_name",
+            nullable = false
+    )
+    private String middle_name;
+
+    @Column(
+            name = "last_name",
+            nullable = false
+    )
+    private String last_name;
 
     @Column(
         name = "email",
@@ -67,9 +76,18 @@ public class Student {
     )
     private int grade;
 
-    @OneToOne
-    private Classes classes;
+    @ManyToMany
+    @JoinTable(
+            name = "student_class",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    @ToString.Exclude
+    private List<Classes> classes = new ArrayList<>();
 
     @OneToOne
     private Address address;
+
+    @ManyToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    private List<Parent> parents = new ArrayList<>();
 }

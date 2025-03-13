@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.school.address.AddressDTO;
 import com.example.school.classes.ClassesDTO;
-import com.example.school.subjects.SubjectsDTO;
+import com.example.school.Courses.CoursesDTO;
 
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class TeacherDTO {
     String email;
     String photo;
     String phone;
-    List<SubjectsDTO> subjects;
+    List<CoursesDTO> coursesDTO;
     List<ClassesDTO> classes;
     AddressDTO address;
 }

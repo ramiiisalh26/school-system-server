@@ -11,6 +11,8 @@ public interface IUserServices {
     
     UserDetails getUser(String username);
 
+    Optional<User> getUserById(Long id);
+
     int enableUser(String username);
 
     Optional<User> findByEmail(String username);

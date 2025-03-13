@@ -1,7 +1,7 @@
 package com.example.school.lesson;
 
 import com.example.school.classes.Classes;
-import com.example.school.subjects.Subjects;
+import com.example.school.Courses.Courses;
 import com.example.school.teacher.Teacher;
 
 import jakarta.persistence.Entity;
@@ -34,7 +34,7 @@ public class Lesson {
     private Long id;
 
     @OneToOne
-    private Subjects subject;
+    private Courses subject;
 
     @OneToOne
     private Classes classes;
