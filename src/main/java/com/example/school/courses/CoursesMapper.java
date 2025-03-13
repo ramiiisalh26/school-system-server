@@ -1,4 +1,4 @@
-package com.example.school.Courses;
+package com.example.school.courses;
 
 
 public class CoursesMapper {

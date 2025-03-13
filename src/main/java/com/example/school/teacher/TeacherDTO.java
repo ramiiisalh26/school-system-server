@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.school.address.AddressDTO;
 import com.example.school.classes.ClassesDTO;
-import com.example.school.Courses.CoursesDTO;
+import com.example.school.courses.CoursesDTO;
 
 import lombok.Builder;
 import lombok.Data;

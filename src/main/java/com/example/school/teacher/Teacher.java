@@ -6,7 +6,7 @@ import java.util.List;
 import com.example.school.address.Address;
 import com.example.school.classes.Classes;
 import com.example.school.result.Result;
-import com.example.school.Courses.Courses;
+import com.example.school.courses.Courses;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;

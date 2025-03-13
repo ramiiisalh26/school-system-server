@@ -1,7 +1,7 @@
 package com.example.school.teacher;
 
 import com.example.school.classes.ClassesDTO;
-import com.example.school.Courses.CoursesDTO;
+import com.example.school.courses.CoursesDTO;
 
 import java.util.List;
 import java.util.Optional;

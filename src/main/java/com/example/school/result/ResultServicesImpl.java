@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.school.student.StudentMapper;
-import com.example.school.Courses.CoursesMapper;
+import com.example.school.courses.CoursesMapper;
 import com.example.school.teacher.TeacherMapper;
 
 @Service

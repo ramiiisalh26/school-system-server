@@ -1,4 +1,4 @@
-package com.example.school.Courses;
+package com.example.school.courses;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface ICoursesRepositry extends JpaRepository<Courses,Long>{
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM teacher_subjects WHERE teacher_id = :id", nativeQuery = true)
+    @Query(value = "DELETE FROM teacher_courses WHERE teacher_id = :id", nativeQuery = true)
     void deleteTeacher_subject(Long id);
 
     // @Query("SELECT s FROM Subjects s JOIN Teacher t ON s.subjects.id = t.teacher.id WHERE t.subjects.id = :id")

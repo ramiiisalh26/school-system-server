@@ -1,7 +1,7 @@
 package com.example.school.result;
 
 import com.example.school.student.StudentMapper;
-import com.example.school.Courses.CoursesMapper;
+import com.example.school.courses.CoursesMapper;
 import com.example.school.teacher.TeacherMapper;
 
 public class ResultMapper {

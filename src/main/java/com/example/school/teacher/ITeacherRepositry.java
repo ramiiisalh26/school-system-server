@@ -2,7 +2,7 @@ package com.example.school.teacher;
 
 
 import com.example.school.classes.Classes;
-import com.example.school.Courses.Courses;
+import com.example.school.courses.Courses;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -3,7 +3,7 @@ package com.example.school.result;
 import java.util.Date;
 
 import com.example.school.student.Student;
-import com.example.school.Courses.Courses;
+import com.example.school.courses.Courses;
 import com.example.school.teacher.Teacher;
 
 import jakarta.persistence.Entity;

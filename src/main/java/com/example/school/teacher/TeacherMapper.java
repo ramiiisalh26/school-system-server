@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.example.school.address.AddressMapper;
 import com.example.school.classes.ClassesMapper;
-import com.example.school.Courses.CoursesMapper;
+import com.example.school.courses.CoursesMapper;
 
 public class TeacherMapper {
     public static Teacher fromDTOToEntity(TeacherDTO teacherDTO){

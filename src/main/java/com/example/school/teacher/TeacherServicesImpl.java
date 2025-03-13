@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 import com.example.school.address.Address;
 import com.example.school.address.IAddressRespositry;
 import com.example.school.classes.*;
-import com.example.school.Courses.*;
+import com.example.school.courses.Courses;
+import com.example.school.courses.CoursesDTO;
+import com.example.school.courses.CoursesMapper;
+import com.example.school.courses.ICoursesRepositry;
 import com.example.school.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +24,7 @@ public class TeacherServicesImpl implements ITeacherServices{
 
     private final ITeacherRepositry IteacherRepositry;
     private final IAddressRespositry IaddressRepositry;
-    private final ICoursesRepositry ICoursesRepositry;
+    private final ICoursesRepositry IcoursesRepositry;
     private final IClassesRepositry IclassesRepositry;
     private final IUserServices IuserServices;
     private final PasswordEncoder passwordEncoder;
@@ -31,7 +34,7 @@ public class TeacherServicesImpl implements ITeacherServices{
     public TeacherServicesImpl(
         final ITeacherRepositry IteacherRepositry,
         final IAddressRespositry IaddressRepositry,
-        final ICoursesRepositry ICoursesRepositry,
+        final ICoursesRepositry IcoursesRepositry,
         final IClassesRepositry IclassesRepositry,
         final IUserServices IuserServices,
         final PasswordEncoder passwordEncoder,
@@ -39,7 +42,7 @@ public class TeacherServicesImpl implements ITeacherServices{
 
         this.IteacherRepositry = IteacherRepositry;
         this.IaddressRepositry = IaddressRepositry;
-        this.ICoursesRepositry = ICoursesRepositry;
+        this.IcoursesRepositry = IcoursesRepositry;
         this.IclassesRepositry = IclassesRepositry;
         this.IuserServices = IuserServices;
         this.ItokenServices = ItokenServices;
@@ -91,11 +94,11 @@ public class TeacherServicesImpl implements ITeacherServices{
 
         teacher.setAddress(savedAddress);
 
-        List<Courses> Courses = new ArrayList<>();
+        List<Courses> courses = new ArrayList<>();
 
         for (Courses sub : teacher.getCourses()) {
-            Courses subject = ICoursesRepositry.getSubjectByName(sub.getName());
-            Courses.add(subject);
+            Courses subject = IcoursesRepositry.getSubjectByName(sub.getName());
+            courses.add(subject);
         }
 
 //        teacher.(Courses);
