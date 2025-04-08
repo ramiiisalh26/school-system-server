@@ -1,5 +1,6 @@
 package com.example.school.classes;
 
+import com.example.school.assignment.Assignment;
 import com.example.school.result.Result;
 import com.example.school.student.Student;
 import com.example.school.teacher.Teacher;
@@ -66,4 +67,7 @@ public class Classes {
 
     @OneToMany(mappedBy = "classes", fetch = FetchType.LAZY)
     private List<Result> results = new ArrayList<>();
+
+    @OneToOne
+    private Assignment assignment;
 }

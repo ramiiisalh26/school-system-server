@@ -3,7 +3,7 @@ package com.example.school.user;
 import java.security.Principal;
 import java.util.Optional;
 
-import com.example.school.security.cache.RedisUserCacheService;
+//import com.example.school.security.cache.RedisUserCacheService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,14 +18,15 @@ public class UserServicesImpl implements IUserServices {
 
     private final PasswordEncoder passwordEncoder;
     private final IUserRepositry userRepositry;
-    private final RedisUserCacheService redisUserCacheService;
+//    private final RedisUserCacheService redisUserCacheService;
     @Autowired
     public UserServicesImpl(final PasswordEncoder passwordEncoder,
-                            final IUserRepositry userRepositry,
-                            final RedisUserCacheService redisUserCacheService) {
+                            final IUserRepositry userRepositry
+//                            final RedisUserCacheService redisUserCacheService
+    ){
         this.userRepositry = userRepositry;
         this.passwordEncoder = passwordEncoder;
-        this.redisUserCacheService = redisUserCacheService;
+//        this.redisUserCacheService = redisUserCacheService;
     }
 
     @Transactional
@@ -59,12 +60,12 @@ public class UserServicesImpl implements IUserServices {
     @Cacheable(value = "users",key = "#userId")
     @Override
     public Optional<User> getUserById(Long userId) {
-        User cachedUser = redisUserCacheService.getAutheticatedUserById(userId);
-        if (cachedUser != null) return Optional.of(cachedUser);
+//        User cachedUser = redisUserCacheService.getAutheticatedUserById(userId);
+//        if (cachedUser != null) return Optional.of(cachedUser);
 
         User user = userRepositry.findById(userId).orElseThrow();
 
-        redisUserCacheService.saveAutheticatedUserById(userId, user);
+//        redisUserCacheService.saveAutheticatedUserById(userId, user);
 
         return Optional.of(user);
     }
@@ -73,12 +74,12 @@ public class UserServicesImpl implements IUserServices {
     @Cacheable(value = "users",key = "#username")
     @Override
     public Optional<User> findByEmail(String username) {
-        User cachedUser = redisUserCacheService.getAutheticatedUserByUsername(username);
-        if (cachedUser != null) return Optional.of(cachedUser);
+//        User cachedUser = redisUserCacheService.getAutheticatedUserByUsername(username);
+//        if (cachedUser != null) return Optional.of(cachedUser);
 
         User user = userRepositry.findByUsername(username).orElseThrow();
 
-        redisUserCacheService.saveAutheticatedUserByUsername(username,user);
+//        redisUserCacheService.saveAutheticatedUserByUsername(username,user);
 
         return Optional.of(user);
     }
@@ -111,9 +112,9 @@ public class UserServicesImpl implements IUserServices {
     @Override
     public void deleteUserById(Long id) {
 
-        if (redisUserCacheService.getAutheticatedUserById(id) != null) {
-            redisUserCacheService.removeAutheticatedUser(id);
-        }
+//        if (redisUserCacheService.getAutheticatedUserById(id) != null) {
+//            redisUserCacheService.removeAutheticatedUser(id);
+//        }
 
         userRepositry.deleteById(id);
     }

@@ -2,6 +2,7 @@ package com.example.school.courses;
 
 import java.util.List;
 
+import com.example.school.assignment.Assignment;
 import com.example.school.result.Result;
 import com.example.school.teacher.Teacher;
 
@@ -45,4 +46,7 @@ public class Courses {
 
     @OneToMany(mappedBy = "courses", fetch = FetchType.LAZY)
     private List<Result> results;
+
+    @OneToMany(mappedBy = "courses",fetch = FetchType.LAZY)
+    private List<Assignment> assignments;
 }

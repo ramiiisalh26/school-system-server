@@ -38,7 +38,7 @@ public class CoursesServicesImpl implements ICoursesServices {
 
         Courses courses = CoursesMapper.fromDTOToEntity(coursesDTO);
 
-        String courseCode = genereateCourseCode(courses.getDepartment());
+        String courseCode = genereateCourseCode(coursesDTO.getDepartment());
 
         courses.setCourse_code(courseCode);
 

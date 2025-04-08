@@ -13,8 +13,9 @@ import lombok.Data;
 @Builder
 public class AssignmentDTO {
     Long id;
-    Courses courses;
-    Classes classes;
-    Teacher teacher;
+    String course_code;
+    String student_code;
+    String class_name;
+    String teacher_code;
     Date dueDate;
 }

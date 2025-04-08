@@ -5,6 +5,7 @@ import java.util.List;
 
 // import com.example.school.address.Address;
 import com.example.school.address.Address;
+import com.example.school.assignment.Assignment;
 import com.example.school.classes.Classes;
 import com.example.school.result.Result;
 import com.example.school.courses.Courses;
@@ -108,4 +109,7 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
     private List<Result> result = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
+    private List<Assignment> assignments;
 }

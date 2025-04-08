@@ -61,4 +61,23 @@ public class AssignmentController {
         assignmentServices.deleteAssignmentById(id);
         return new ResponseEntity<AssignmentDTO>(HttpStatus.OK);
     }
+
+    @GetMapping(path = "/getByTeacherCode/{teacher_code}")
+    public ResponseEntity<List<AssignmentDTO>> getAllAssignmentByTeacherId(@PathVariable final String teacher_code){
+        List<AssignmentDTO> assignments = assignmentServices.getAssignmentsByTeacherCode(teacher_code);
+        return new ResponseEntity<>(assignments,HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getByStudentCode/{student_code}")
+    public ResponseEntity<List<AssignmentDTO>> getAllAssignmentByStudentCode(@PathVariable final String student_code){
+        List<AssignmentDTO> assignments = assignmentServices.getAssignmentsByStudentCode(student_code);
+        return new ResponseEntity<>(assignments,HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getByCourseCode/{course_code}")
+    public ResponseEntity<List<AssignmentDTO>> getAllAssignmentByCourseCode(@PathVariable final String course_code){
+        List<AssignmentDTO> assignmentS = assignmentServices.getAssignmentsByCoursesCode(course_code);
+        return new ResponseEntity<>(assignmentS,HttpStatus.OK);
+    }
+
 }

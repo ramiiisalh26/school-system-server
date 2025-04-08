@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import com.example.school.address.*;
 import com.example.school.classes.*;
-import com.example.school.security.cache.RedisStudentCacheService;
+//import com.example.school.security.cache.RedisStudentCacheService;
 import com.example.school.security.token.ITokenServices;
 import com.example.school.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class StudentServicesImpl implements IStudentServices{
     private final PasswordEncoder passwordEncoder;
     private final IClassesRepositry IclassesRepositry;
     private final ITokenServices ItokenServices;
-    private final RedisStudentCacheService redisStudentCacheService;
+//    private final RedisStudentCacheService redisStudentCacheService;
 
     @Autowired
     public StudentServicesImpl(
@@ -34,8 +34,8 @@ public class StudentServicesImpl implements IStudentServices{
         final IUserServices IuserServices,
         final PasswordEncoder passwordEncoder,
         final IClassesRepositry IclassesRepositry,
-        final ITokenServices ItokenServices,
-        final RedisStudentCacheService redisStudentCacheService
+        final ITokenServices ItokenServices
+//        final RedisStudentCacheService redisStudentCacheService
     ){
         this.IstudentRepositry = IstudentRepositry;
         this.IaddressRepositry = IaddressRepositry;
@@ -43,7 +43,7 @@ public class StudentServicesImpl implements IStudentServices{
         this.passwordEncoder = passwordEncoder;
         this.IclassesRepositry = IclassesRepositry;
         this.ItokenServices = ItokenServices;
-        this.redisStudentCacheService = redisStudentCacheService;
+//        this.redisStudentCacheService = redisStudentCacheService;
     }
     
     @Override
@@ -141,15 +141,15 @@ public class StudentServicesImpl implements IStudentServices{
 
     @Override
     public Optional<StudentDTO> getStudentById(Long id) {
-        StudentDTO cashedStudent = redisStudentCacheService.getStudentById(id);
+//        StudentDTO cashedStudent = redisStudentCacheService.getStudentById(id);
 
-        if (cashedStudent != null){
-            return Optional.of(cashedStudent);
-        }
+//        if (cashedStudent != null){
+//            return Optional.of(cashedStudent);
+//        }
 
 
         Optional<Student> student = IstudentRepositry.findById(id);
-        student.ifPresent(value -> redisStudentCacheService.saveStudent(id, StudentMapper.fromEntityToDTO(value)));
+//        student.ifPresent(value -> redisStudentCacheService.saveStudent(id, StudentMapper.fromEntityToDTO(value)));
 
         return student.map(StudentMapper::fromEntityToDTO);
     }

@@ -11,7 +11,7 @@ public interface IAssignmentServices {
 
     List<AssignmentDTO> addManyAssignment(List<AssignmentDTO> assignmentsDTO);
 
-    AssignmentDTO addAssignment(AssignmentDTO assignmentDTO);
+    void addAssignment(AssignmentDTO assignmentDTO);
 
     Optional<AssignmentDTO> getAssignmentById(Long id);
 
@@ -19,4 +19,9 @@ public interface IAssignmentServices {
 
     void deleteAssignmentById(Long id);
 
+    List<AssignmentDTO> getAssignmentsByTeacherCode(String teacher_code);
+
+    List<AssignmentDTO> getAssignmentsByCoursesCode(String courses_code);
+
+    List<AssignmentDTO> getAssignmentsByStudentCode(String student_code);
 }

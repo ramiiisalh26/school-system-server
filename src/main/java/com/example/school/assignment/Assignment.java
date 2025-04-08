@@ -4,14 +4,10 @@ import java.util.Date;
 
 import com.example.school.classes.Classes;
 import com.example.school.courses.Courses;
+import com.example.school.student.Student;
 import com.example.school.teacher.Teacher;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,14 +31,17 @@ public class Assignment {
     )
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     private Courses courses;
     
     @OneToOne
     private Classes classes;
 
-    @OneToOne
+    @ManyToOne
     private Teacher teacher;
+
+    @ManyToOne
+    private Student student;
 
     private Date dueDate;
 }

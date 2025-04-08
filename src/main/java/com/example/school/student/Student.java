@@ -1,6 +1,7 @@
 package com.example.school.student;
 
 import com.example.school.address.Address;
+import com.example.school.assignment.Assignment;
 import com.example.school.classes.Classes;
 
 import com.example.school.parent.Parent;
@@ -96,4 +97,7 @@ public class Student {
 
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
     private List<Result> results = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
+    private List<Assignment> assignments;
 }
