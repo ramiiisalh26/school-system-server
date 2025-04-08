@@ -7,11 +7,7 @@ import com.example.school.address.Address;
 import com.example.school.student.Student;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -72,6 +68,7 @@ public class Parent {
             joinColumns = @JoinColumn(name = "parent_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
+    @ToString.Exclude
     private List<Student> student = new ArrayList<>();
 
 }

@@ -1,8 +1,10 @@
 package com.example.school.classes;
 
+import com.example.school.result.Result;
 import com.example.school.student.Student;
 import com.example.school.teacher.Teacher;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,8 +58,12 @@ public class Classes {
 
     @ManyToMany(mappedBy = "classes",fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private List<Teacher> teacher;
 
     @ManyToMany(mappedBy = "classes")
     private List<Student> student = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classes", fetch = FetchType.LAZY)
+    private List<Result> results = new ArrayList<>();
 }

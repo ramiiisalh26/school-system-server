@@ -16,4 +16,7 @@ public interface IStudentRepositry extends JpaRepository<Student,Long>{
 
     @Query("SELECT s FROM Student s WHERE s.student_id = :student_id")
     Student FindByStudentID(String student_id);
+
+    @Query("SELECT s FROM Student s WHERE s.student_id = :student_code")
+    Student getByStudentCode(String student_code);
 }

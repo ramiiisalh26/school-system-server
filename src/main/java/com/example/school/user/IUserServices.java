@@ -9,7 +9,7 @@ public interface IUserServices {
 
     User signUp(User user);
     
-    UserDetails getUser(String username);
+//    UserDetails getUser(String username);
 
     Optional<User> getUserById(Long id);
 

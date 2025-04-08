@@ -19,59 +19,73 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/result")
 public class ResultController {
     
-    private final IResultServices resultServices;
+    private final IResultServices IresultServices;
 
     @Autowired
     public ResultController(final IResultServices resultServices){
-        this.resultServices = resultServices;
+        this.IresultServices = resultServices;
     }
 
     @PostMapping(path = "/add")
     public ResponseEntity<List<ResultDTO>> addResult(@RequestBody final List<ResultDTO> resultDTO){
-        final List<ResultDTO> savedResult = resultServices.addManyResult(resultDTO);
-        return new ResponseEntity<List<ResultDTO>>(savedResult,HttpStatus.OK);
+        final List<ResultDTO> savedResult = IresultServices.addManyResult(resultDTO);
+        return new ResponseEntity<>(savedResult,HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<ResultDTO> getResult(@PathVariable final Long id){
-        Optional<ResultDTO> result = resultServices.getResultById(id);
+        Optional<ResultDTO> result = IresultServices.getResultById(id);
         return result.map(resultDTO -> new ResponseEntity<>(resultDTO, HttpStatus.OK)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<ResultDTO>> getAllResults(){
-        return new ResponseEntity<List<ResultDTO>>(resultServices.getAllResults(),HttpStatus.OK);
+        return new ResponseEntity<>(IresultServices.getAllResults(),HttpStatus.OK);
     }
 
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<ResultDTO> updateResult(@PathVariable final Long id,@RequestBody final ResultDTO resultDTO){
-        final Boolean isExist = resultServices.isExist(resultDTO);
+        final Boolean isExist = IresultServices.isExist(resultDTO);
         if (isExist) {
-            final ResultDTO updatedResult = resultServices.updateResult(id, resultDTO);
-            return new ResponseEntity<ResultDTO>(updatedResult,HttpStatus.OK);
+            final ResultDTO updatedResult = IresultServices.updateResult(id, resultDTO);
+            return new ResponseEntity<>(updatedResult,HttpStatus.OK);
         }
-        return new ResponseEntity<ResultDTO>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<ResultDTO> deleteResultById(@PathVariable final Long id){
-        resultServices.deleteResultById(id);
+        IresultServices.deleteResultById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = "getResultByTeacherId/{id}")
     public ResponseEntity<List<ResultDTO>> getResultByTeacherId(@PathVariable final Long id){
-        return new ResponseEntity<List<ResultDTO>>(resultServices.getResultsByTeacherId(id),HttpStatus.OK);
+        return new ResponseEntity<>(IresultServices.getResultsByTeacherId(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getResultByTeacherCode/{teacherCode}")
+    public ResponseEntity<List<ResultDTO>> getResultByTeacherCode(@PathVariable final String teacherCode){
+        return new ResponseEntity<>(IresultServices.getResultByTeacherCode(teacherCode),HttpStatus.OK);
     }
 
     @GetMapping(path = "getResultByStudentId/{id}")
     public ResponseEntity<List<ResultDTO>> getResultByStudentId(@PathVariable final Long id){
-        return  new ResponseEntity<List<ResultDTO>>(resultServices.getResultsByStudentId(id),HttpStatus.OK);
+        return new ResponseEntity<>(IresultServices.getResultsByStudentId(id),HttpStatus.OK);
     }
 
-    @GetMapping(path = "getResultBySubjectId")
-    public ResponseEntity<List<ResultDTO>> getResultBySubjectId(@PathVariable final Long id){
-        return new ResponseEntity<List<ResultDTO>>(resultServices.getResultsBySubjectId(id),HttpStatus.OK);
+    @GetMapping(path = "getResultByStudentCode/{studentCode}")
+    public ResponseEntity<List<ResultDTO>> getResultByStudentCode(@PathVariable final String studentCode){
+        return new ResponseEntity<>(IresultServices.getResultsByStudentCode(studentCode),HttpStatus.OK);
     }
 
+    @GetMapping(path = "getResultByCourseId/{id}")
+    public ResponseEntity<List<ResultDTO>> getResultByCourseId(@PathVariable final Long id){
+        return new ResponseEntity<>(IresultServices.getResultsByCourseId(id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getResultByCourseCode/{courseCode}")
+    public ResponseEntity<List<ResultDTO>> getResultByCourseCode(@PathVariable final String courseCode){
+        return new ResponseEntity<>(IresultServices.getResultByCourseCode(courseCode),HttpStatus.OK);
+    }
 }

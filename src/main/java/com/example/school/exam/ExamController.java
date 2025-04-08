@@ -19,46 +19,58 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/exam")
 public class ExamController {
     
-    private IExamServices examServices;
+    private final IExamServices IexamServices;
     
     @Autowired
-    public ExamController(final IExamServices examServices){
-        this.examServices = examServices;
+    public ExamController(final IExamServices IexamServices){
+        this.IexamServices = IexamServices;
     }
 
     @PostMapping(path = "/add")
     public ResponseEntity<List<ExamDTO>> addExams(@RequestBody final List<ExamDTO> examsDTO){
-        final List<ExamDTO> savedExams = examServices.addManyExams(examsDTO);
-        return new ResponseEntity<List<ExamDTO>>(savedExams,HttpStatus.OK);
+        final List<ExamDTO> savedExams = IexamServices.addManyExams(examsDTO);
+        return new ResponseEntity<>(savedExams,HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExamDTO> getExamyId(@PathVariable final Long id){
-        final Optional<ExamDTO> examDTO = examServices.getExamById(id);
-        if (examDTO.isPresent()) {
-            return new ResponseEntity<ExamDTO>(examDTO.get(),HttpStatus.OK);
-        }
-        return new ResponseEntity<ExamDTO>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExamDTO> getExamById(@PathVariable final Long id){
+        final Optional<ExamDTO> examDTO = IexamServices.getExamById(id);
+        return examDTO.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<ExamDTO>> getAllExams(){
-        return new ResponseEntity<List<ExamDTO>>(examServices.getAllExams(),HttpStatus.OK);
+        return new ResponseEntity<>(IexamServices.getAllExams(),HttpStatus.OK);
     }
 
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<ExamDTO> updateExam(@PathVariable final Long id, @RequestBody final ExamDTO examDTO){
-        final boolean exam = examServices.isExist(examDTO);
+        final boolean exam = IexamServices.isExist(examDTO);
         if (exam) {
-            final ExamDTO updatedExam = examServices.updateExam(id, examDTO);
-            return new ResponseEntity<ExamDTO>(updatedExam,HttpStatus.OK);
+            final ExamDTO updatedExam = IexamServices.updateExam(id, examDTO);
+            return new ResponseEntity<>(updatedExam,HttpStatus.OK);
         }
-        return new ResponseEntity<ExamDTO>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<ExamDTO> deleteExam(@PathVariable final Long id){
-        examServices.deleteExam(id);
-        return new ResponseEntity<ExamDTO>(HttpStatus.OK);
+        IexamServices.deleteExam(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @GetMapping(path = "getExamsByClassName/{class_name}")
+    public ResponseEntity<List<ExamDTO>> getExamsByClassName(@PathVariable final String class_name){
+        return new ResponseEntity<>(IexamServices.getExamsByClassName(class_name),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getExamsByTeacherCode/{teacher_code}")
+    public ResponseEntity<List<ExamDTO>> getExamsByTeacherCode(@PathVariable final String teacher_code){
+        return new ResponseEntity<>(IexamServices.getExamsByTeacherCode(teacher_code),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getExamsByCourseCode/{course_code}")
+    public ResponseEntity<List<ExamDTO>> getExamsByCourseCode(@PathVariable final String course_code){
+        return new ResponseEntity<>(IexamServices.getExamsByCourseCode(course_code),HttpStatus.OK);
     }
 }

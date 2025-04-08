@@ -23,4 +23,7 @@ public interface ITeacherRepositry extends JpaRepository<Teacher,Long>{
 
     @Query("SELECT c FROM Classes c JOIN c.teacher t WHERE t.id = :id")
     List<Classes> getTeacherByClassesId(Long id);
+
+    @Query("SELECT n FROM Teacher n WHERE n.teacher_id = :teacher_id ")
+    Teacher getTeacherByTeacher_id(String teacher_id);
 }

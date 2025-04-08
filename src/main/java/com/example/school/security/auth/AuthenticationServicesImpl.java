@@ -36,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationServicesImpl implements IAuthenticationServices{
 
-    private final IUserServices IUserServices;
+    private final IUserServices IuserServices;
     private final ITokenServices tokenServices;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -64,7 +64,7 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
             .verifCode(verifCode)
             .build();
 
-        IUserServices.signUp(user);
+        IuserServices.signUp(user);
 
         String accessToken = jwtService.generateToken(user);        
 
@@ -89,11 +89,11 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) throws Exception{
 
-        if (!IUserServices.isEnabled(request.getEmail())) {
+        if (!IuserServices.isEnabled(request.getEmail())) {
             String verifCode = VerificationCodeGenerator.generateVerficationCode();
-            User user = IUserServices.findByEmail(request.getEmail()).orElseThrow();
+            User user = IuserServices.findByEmail(request.getEmail()).orElseThrow();
             user.setVerifCode(verifCode);
-            IUserServices.setVerifCode(verifCode,user.getId());
+            IuserServices.setVerifCode(verifCode,user.getId());
             return AuthenticationResponse.builder().message("Please Verify Email First").build();
         }
 
@@ -102,7 +102,7 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
         );
 
         if (authentication.isAuthenticated()) {
-            User user = IUserServices.findByEmail(request.getEmail()).orElseThrow();
+            User user = IuserServices.findByEmail(request.getEmail()).orElseThrow();
             var refreshToken = jwtService.generateRefreshToken(user);
 
             ResponseCookie cookie = ResponseCookie.from("refreshToken",refreshToken)
@@ -142,11 +142,11 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
         }
 
         String username = jwtService.extractUsername(confirmationToken.getToken());
-        User userVerification = IUserServices.findByEmail(username).orElseThrow();
+        User userVerification = IuserServices.findByEmail(username).orElseThrow();
 
         if (userVerification != null && userVerification.getVerifCode().equals(code)) {
             tokenServices.setConfirmedAt(token);
-            IUserServices.enableUser(confirmationToken.getUser().getUsername());
+            IuserServices.enableUser(confirmationToken.getUser().getUsername());
             return "Confirmed";
         }
 
@@ -195,31 +195,28 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
 
     private String extractTokenFromCookie(HttpServletRequest request){
 
-        String tokenFromCookie = Arrays
+        return Arrays
                 .stream(request.getCookies())
                 .filter(cookie -> "refreshToken".equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
-        
-        return tokenFromCookie;
     }
 
     @Override
     public TokenInfo getTokenInfo(HttpServletRequest request) throws Exception{
         String token = extractTokenFromCookie(request);
         String username = jwtService.extractUsername(token);
-        UserDetails userDetails = IUserServices.getUser(username);
+        UserDetails userDetails = IuserServices.findByEmail(username).orElseThrow();
 
         if (jwtService.isTokenVaild(token, userDetails)) {
             String role = jwtService.extractClaim(token,claims -> claims.get("role").toString());
             Date expirationDate = jwtService.extractClaim(token, claims -> (Date) claims.get("exp"));
-            TokenInfo tokenInfo = TokenInfo.builder()
+            return TokenInfo.builder()
                 .username(username)
                 .role(role)
                 .expieDate(expirationDate)
                 .build();
-            return tokenInfo;
         }
         return null;
     }
@@ -241,7 +238,7 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
 
         username = jwtService.extractUsername(refreshToken);
         if (username != null) {
-            var user = this.IUserServices.findByEmail(username).orElseThrow();
+            var user = this.IuserServices.findByEmail(username).orElseThrow();
             if (jwtService.isTokenVaild(refreshToken,user)) {
                 var accessToken = jwtService.generateRefreshToken(user);
                 revokeAllUser(user);
@@ -262,7 +259,7 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
 
     @Override
     public String verfiy(String type, String toEmail){
-        String userVerifCode = IUserServices.findByEmail(toEmail).get().getVerifCode();
+        String userVerifCode = IuserServices.findByEmail(toEmail).get().getVerifCode();
         System.out.println(userVerifCode);
         if (!userVerifCode.isEmpty()) {
             INotification notification = notificationFactory.createNotification(type);

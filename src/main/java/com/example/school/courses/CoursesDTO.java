@@ -12,5 +12,7 @@ import lombok.Data;
 public class CoursesDTO {
     Long id;
     String name;
+    String course_code;
+    String department;
     List<TeacherDTO> teachers;
 }

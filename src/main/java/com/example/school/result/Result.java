@@ -2,6 +2,7 @@ package com.example.school.result;
 
 import java.util.Date;
 
+import com.example.school.classes.Classes;
 import com.example.school.student.Student;
 import com.example.school.courses.Courses;
 import com.example.school.teacher.Teacher;
@@ -36,16 +37,20 @@ public class Result {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id")
-    private Courses subjects;
+    @JoinColumn(name = "course_id")
+    private Courses courses;
 
     @ManyToOne
-    @JoinColumn(name = "student_id",nullable = false)
+    @JoinColumn(name = "student_id")
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id",nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id")
+    private Classes classes;
 
     private Date date;
 

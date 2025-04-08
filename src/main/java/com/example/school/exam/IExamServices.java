@@ -18,5 +18,11 @@ public interface IExamServices {
     ExamDTO updateExam(Long id,ExamDTO examDTO);
 
     void deleteExam(Long id);
-    
+
+    List<ExamDTO> getExamsByClassName(String class_name);
+
+    List<ExamDTO> getExamsByTeacherCode(String teacher_code);
+
+    List<ExamDTO> getExamsByCourseCode(String course_code);
+
 }

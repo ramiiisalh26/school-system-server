@@ -33,10 +33,14 @@ public class CoursesServicesImpl implements ICoursesServices {
     public CoursesDTO addCourse(CoursesDTO coursesDTO) {
         
         if (coursesDTO == null) {
-            throw new RuntimeException("Subject must be provided");
+            throw new RuntimeException("course must be provided");
         }
 
         Courses courses = CoursesMapper.fromDTOToEntity(coursesDTO);
+
+        String courseCode = genereateCourseCode(courses.getDepartment());
+
+        courses.setCourse_code(courseCode);
 
         Courses savedCourses = IcoursesRepositry.save(courses);
 
@@ -45,8 +49,8 @@ public class CoursesServicesImpl implements ICoursesServices {
 
     @Override
     public Optional<CoursesDTO> findCourseById(Long id) {
-        Optional<Courses> subjects = IcoursesRepositry.findById(id);
-        return subjects.map(CoursesMapper::fromEntityToDTO);
+        Optional<Courses> courses = IcoursesRepositry.findById(id);
+        return courses.map(CoursesMapper::fromEntityToDTO);
     }
 
     @Override
@@ -72,17 +76,30 @@ public class CoursesServicesImpl implements ICoursesServices {
     }
 
     @Override
-    public CoursesDTO getCoursesByName(String subjectName) {
-        return CoursesMapper.fromEntityToDTO(IcoursesRepositry.getSubjectByName(subjectName));
+    public CoursesDTO getCoursesByName(String courseName) {
+        return CoursesMapper.fromEntityToDTO(IcoursesRepositry.getCourseByName(courseName));
     }
     
     @Override
-    public List<CoursesDTO> getAllSujectsByTeacher_id(Long id){
-        List<Courses> subjects = IcoursesRepositry.getAllSujectsByTeacher_id(id);
-        return subjects.stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    public List<CoursesDTO> getAllCoursesByTeacher_id(Long id){
+        List<Courses> courses = IcoursesRepositry.getAllCoursesByTeacher_id(id);
+        return courses.stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
-    public void deleteTeacher_subject(Long id){
-        IcoursesRepositry.deleteTeacher_subject(id);
+    private String genereateCourseCode(String prefix){
+
+        String lastCourseCode = IcoursesRepositry.FindLastCourseCode(prefix + "%");
+
+        int newNumber = 1;
+
+        if (lastCourseCode != null) {
+            String numberPart = lastCourseCode.replaceAll("[^0-9]", "");
+            newNumber = Integer.parseInt(numberPart) + 1;
+        }
+        return prefix + newNumber;
     }
+
+//    public void deleteTeacher_course(Long id){
+//        IcoursesRepositry.deleteTeacher_course(id);
+//    }
 }

@@ -4,7 +4,7 @@ public class AssignmentMapper {
     public static Assignment fromDTOToEntity(AssignmentDTO assignmentDTO){
         return Assignment.builder()
             .id(assignmentDTO.getId())
-            .courses(assignmentDTO.getSubjects())
+            .courses(assignmentDTO.getCourses())
             .classes(assignmentDTO.getClasses())
             .teacher(assignmentDTO.getTeacher())
             .dueDate(assignmentDTO.getDueDate())
@@ -13,7 +13,7 @@ public class AssignmentMapper {
     public static AssignmentDTO fromEntityToDTO(Assignment assignment){
         return AssignmentDTO.builder()
             .id(assignment.getId())
-            .subjects(assignment.getCourses())
+            .courses(assignment.getCourses())
             .classes(assignment.getClasses())
             .teacher(assignment.getTeacher())
             .dueDate(assignment.getDueDate())

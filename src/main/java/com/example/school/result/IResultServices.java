@@ -21,7 +21,14 @@ public interface IResultServices {
 
     List<ResultDTO> getResultsByTeacherId(Long teacherId);
 
+    List<ResultDTO> getResultByTeacherCode(String teacherCode);
+
     List<ResultDTO> getResultsByStudentId(Long studentId);
 
-    List<ResultDTO> getResultsBySubjectId(Long subjectId);
+    List<ResultDTO> getResultsByStudentCode(String studentCode);
+
+    List<ResultDTO> getResultsByCourseId(Long subjectId);
+
+    List<ResultDTO> getResultByCourseCode(String courseCode);
+
 }

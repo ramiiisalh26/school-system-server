@@ -97,11 +97,11 @@ public class TeacherServicesImpl implements ITeacherServices{
         List<Courses> courses = new ArrayList<>();
 
         for (Courses sub : teacher.getCourses()) {
-            Courses subject = IcoursesRepositry.getSubjectByName(sub.getName());
+            Courses subject = IcoursesRepositry.getCourseByName(sub.getName());
             courses.add(subject);
         }
 
-//        teacher.(Courses);
+        teacher.setCourses(courses);
 
         List<Classes> classesList = new ArrayList<>();
         for (Classes classes : teacher.getClasses()) {
@@ -134,7 +134,7 @@ public class TeacherServicesImpl implements ITeacherServices{
         Address gterAddress = IaddressRepositry.findById(teacherDTO.getAddress().getId()).get();
 
         teacher.setClasses(teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()));
-        teacher.setCourses(teacherDTO.getCoursesDTO().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()));
+        teacher.setCourses(teacherDTO.getCourses().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()));
 
         Address address = Address.builder()
                 .state(teacherDTO.getAddress().getState())
@@ -167,17 +167,25 @@ public class TeacherServicesImpl implements ITeacherServices{
 
         teacher.getCourses().forEach(sub -> sub.setTeachers(null));
 
+        teacher.getResult().forEach(re -> re.setTeacher(null));
+
         Long idAddress = teacher.getAddress().getId();
         Long idUser = teacher.getAddress().getUser().getId();
 
-        teacher.setAddress(null);
+//        teacher.setAddress(null);
 
-        IaddressRepositry.deleteById(idAddress);
+        if (idAddress != null) {
+            teacher.setAddress(null);
+            IaddressRepositry.deleteById(idAddress);
+        }
 
-        IuserServices.deleteUserById(idUser);
+        if (idUser != null) {
+            IuserServices.deleteUserById(idUser);
+        }
+
 
         if (!ItokenServices.findAllToken(idUser).isEmpty()) {
-            ItokenServices.deleteAllTokenByUserId(idUser);            
+            ItokenServices.deleteAllTokenByUserId(idUser);
         }
 
         IteacherRepositry.deleteById(id);

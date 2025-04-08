@@ -11,15 +11,14 @@ import jakarta.transaction.Transactional;
 public interface ICoursesRepositry extends JpaRepository<Courses,Long>{
     
     @Query("SELECT s FROM Courses s WHERE s.name = ?1")
-    Courses getSubjectByName(String subjecName);
+    Courses getCourseByName(String courseName);
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM teacher_courses WHERE teacher_id = :id", nativeQuery = true)
-    void deleteTeacher_subject(Long id);
+    @Query("SELECT c FROM Courses c WHERE c.course_code = :course_code")
+    Courses getCourseByCourse_code(String course_code);
 
-    // @Query("SELECT s FROM Subjects s JOIN Teacher t ON s.subjects.id = t.teacher.id WHERE t.subjects.id = :id")
     @Query("SELECT s FROM Courses s JOIN s.teachers t WHERE t.id = :id")
-    List<Courses> getAllSujectsByTeacher_id(Long id);
+    List<Courses> getAllCoursesByTeacher_id(Long id);
 
+    @Query("SELECT c.course_code FROM Courses c WHERE c.course_code LIKE :depart ORDER BY c.course_code DESC LIMIT 1")
+    String FindLastCourseCode(String depart);
 }

@@ -19,9 +19,9 @@ public interface ICoursesServices {
 
     CoursesDTO updateCourses(Long id, CoursesDTO coursesDTO);
 
-    CoursesDTO getCoursesByName(String subjectName);
+    CoursesDTO getCoursesByName(String courseName);
 
-    void deleteTeacher_subject(Long id);
+//    void deleteTeacher_course(Long id);
 
-    List<CoursesDTO> getAllSujectsByTeacher_id(Long id);
+    List<CoursesDTO> getAllCoursesByTeacher_id(Long id);
 }

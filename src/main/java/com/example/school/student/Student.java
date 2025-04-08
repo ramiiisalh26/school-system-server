@@ -4,6 +4,8 @@ import com.example.school.address.Address;
 import com.example.school.classes.Classes;
 
 import com.example.school.parent.Parent;
+import com.example.school.result.Result;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -83,6 +85,7 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "class_id")
     )
     @ToString.Exclude
+    @JsonIgnore
     private List<Classes> classes = new ArrayList<>();
 
     @OneToOne
@@ -90,4 +93,7 @@ public class Student {
 
     @ManyToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<Parent> parents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
+    private List<Result> results = new ArrayList<>();
 }

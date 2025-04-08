@@ -33,6 +33,11 @@ public class Courses {
     )
     private String name;
 
+    @Column(name = "course_code")
+    private String course_code;
+
+    private String department;
+
     @ManyToMany(
         mappedBy = "courses",
         fetch = FetchType.LAZY)

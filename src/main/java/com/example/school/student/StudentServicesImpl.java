@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import com.example.school.address.*;
 import com.example.school.classes.*;
+import com.example.school.security.cache.RedisStudentCacheService;
 import com.example.school.security.token.ITokenServices;
 import com.example.school.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class StudentServicesImpl implements IStudentServices{
     private final PasswordEncoder passwordEncoder;
     private final IClassesRepositry IclassesRepositry;
     private final ITokenServices ItokenServices;
+    private final RedisStudentCacheService redisStudentCacheService;
 
     @Autowired
     public StudentServicesImpl(
@@ -31,7 +34,8 @@ public class StudentServicesImpl implements IStudentServices{
         final IUserServices IuserServices,
         final PasswordEncoder passwordEncoder,
         final IClassesRepositry IclassesRepositry,
-        final ITokenServices ItokenServices
+        final ITokenServices ItokenServices,
+        final RedisStudentCacheService redisStudentCacheService
     ){
         this.IstudentRepositry = IstudentRepositry;
         this.IaddressRepositry = IaddressRepositry;
@@ -39,6 +43,7 @@ public class StudentServicesImpl implements IStudentServices{
         this.passwordEncoder = passwordEncoder;
         this.IclassesRepositry = IclassesRepositry;
         this.ItokenServices = ItokenServices;
+        this.redisStudentCacheService = redisStudentCacheService;
     }
     
     @Override
@@ -79,7 +84,7 @@ public class StudentServicesImpl implements IStudentServices{
                 .build();
 
         User savedUser = IuserServices.signUp(user);
-        System.out.println("hhhh");
+
         Address address = Address.builder()
                 .city(student.getAddress().getCity())
                 .country(student.getAddress().getCountry())
@@ -95,6 +100,8 @@ public class StudentServicesImpl implements IStudentServices{
 
         List<Classes> classes = student.getClasses().stream().map(classed -> IclassesRepositry.getClassesByName(classed.getName())).collect(Collectors.toList());
 
+        if (classes.isEmpty()) throw new RuntimeException("Classes Must be provided");
+
         student.setClasses(classes);
 
         IstudentRepositry.save(student);
@@ -103,8 +110,8 @@ public class StudentServicesImpl implements IStudentServices{
     @Override
     public void deleteStudentById(Long id) {
 
-        Student student = IstudentRepositry.findById(id).get();
-        System.out.println(StudentMapper.fromEntityToDTO(student));
+        Student student = IstudentRepositry.findById(id).orElseThrow();
+
         student.getClasses().forEach(classes -> classes.setStudent(null));
 
         Long idAddress = student.getAddress().getId();
@@ -131,18 +138,27 @@ public class StudentServicesImpl implements IStudentServices{
         return students.stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
+
     @Override
     public Optional<StudentDTO> getStudentById(Long id) {
-        Optional<Student> student = IstudentRepositry.findById(id);
-        return student.map(StudentMapper::fromEntityToDTO);
+        StudentDTO cashedStudent = redisStudentCacheService.getStudentById(id);
 
+        if (cashedStudent != null){
+            return Optional.of(cashedStudent);
+        }
+
+
+        Optional<Student> student = IstudentRepositry.findById(id);
+        student.ifPresent(value -> redisStudentCacheService.saveStudent(id, StudentMapper.fromEntityToDTO(value)));
+
+        return student.map(StudentMapper::fromEntityToDTO);
     }
 
     @Override
     public StudentDTO updateStudentById(Long id, StudentDTO studentDTO) {
 
         Student student = IstudentRepositry.findById(id).orElseThrow();
-        Address address = IaddressRepositry.findById(studentDTO.getAddress().getId()).get();
+        Address address = IaddressRepositry.findById(studentDTO.getAddress().getId()).orElseThrow();
 
         address.setCity(studentDTO.getAddress().getCity());
         address.setCountry(studentDTO.getAddress().getCountry());
@@ -178,9 +194,9 @@ public class StudentServicesImpl implements IStudentServices{
     private String generateStudentID(int year) {
 
         String yearPart = String.valueOf(year).substring(2);
-        System.out.println(yearPart);
+
         String lastStudentId = IstudentRepositry.FindLastStudentID(yearPart);
-        System.out.println(lastStudentId);
+
         int newIncrement = 1;
         if (lastStudentId != null) {
             int lastIncrement = Integer.parseInt(lastStudentId.substring(2));

@@ -4,22 +4,39 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.school.classes.Classes;
+import com.example.school.classes.IClassesRepositry;
+import com.example.school.courses.Courses;
+import com.example.school.courses.ICoursesRepositry;
+import com.example.school.teacher.ITeacherRepositry;
+import com.example.school.teacher.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExamServicesImpl implements IExamServices{
 
-    private IExamRepositry examRepositry;
+    private final IExamRepositry IexamRepositry;
+    private final ITeacherRepositry IteacherRepositry;
+    private final ICoursesRepositry IcoursesRepositry;
+    private final IClassesRepositry IclassesRepositry;
 
     @Autowired
-    public ExamServicesImpl(final IExamRepositry examRepositry){
-        this.examRepositry = examRepositry;
+    public ExamServicesImpl(
+            final IExamRepositry IexamRepositry,
+            final ITeacherRepositry IteacherRepositry,
+            final ICoursesRepositry IcoursesRepositry,
+            final IClassesRepositry IclassesRepositry
+            ){
+        this.IexamRepositry = IexamRepositry;
+        this.IteacherRepositry = IteacherRepositry;
+        this.IcoursesRepositry = IcoursesRepositry;
+        this.IclassesRepositry = IclassesRepositry;
     }
 
     @Override
     public Boolean isExist(ExamDTO examDTO) {
-        return examRepositry.existsById(examDTO.getId());
+        return IexamRepositry.existsById(examDTO.getId());
     }
 
     @Override
@@ -36,45 +53,80 @@ public class ExamServicesImpl implements IExamServices{
             throw new RuntimeException("Exam Must be provided");
         }
 
-        Exam exam = ExamMapper.fromDTOToEntity(examDTO);
+        Courses courses = IcoursesRepositry.getCourseByCourse_code(examDTO.getCourse_code());
+        if (courses == null) throw new RuntimeException("Course Must be provided");
 
-        Exam savedExam = examRepositry.save(exam);
+        Classes classes = IclassesRepositry.getClassesByName(examDTO.getClass_name());
+        if (classes == null) throw new RuntimeException("Classes Must be provided");
+
+        Teacher teacher = IteacherRepositry.getTeacherByTeacher_id(examDTO.getTeacher_code());
+        if (teacher == null) throw new RuntimeException("Teacher Must be provided");
+
+        Exam exam = Exam.builder()
+                .courses(courses)
+                .classes(classes)
+                .teacher(teacher)
+                .date(examDTO.getDate())
+                .build();
+
+        Exam savedExam = IexamRepositry.save(exam);
 
         return ExamMapper.fromEntityToDTO(savedExam);
     }
 
     @Override
     public Optional<ExamDTO> getExamById(Long id) {
-        Optional<Exam> exam = examRepositry.findById(id);
-        if (exam.isPresent()) {
-            return Optional.of(ExamMapper.fromEntityToDTO(exam.get()));
-        }
-        return Optional.empty();
+        Optional<Exam> exam = IexamRepositry.findById(id);
+        return exam.map(ExamMapper::fromEntityToDTO);
     }
 
     @Override
     public List<ExamDTO> getAllExams() {
-        List<Exam> exams = examRepositry.findAll();
-        List<ExamDTO> examsDTO = exams.stream().map(exam -> ExamMapper.fromEntityToDTO(exam)).collect(Collectors.toList());
-        return examsDTO;
+        List<Exam> exams = IexamRepositry.findAll();
+        return exams.stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
     public ExamDTO updateExam(Long id,ExamDTO examDTO) {
-        Exam exam = examRepositry.findById(id).orElseThrow();
-        if (exam != null) {
-            exam.setClasses(examDTO.getClasses());
-            exam.setSubjects(examDTO.getSubjects());
-            exam.setTeacher(examDTO.getTeacher());
-            exam.setDate(examDTO.getDate());
-            examRepositry.save(exam);
-        }
-        return ExamMapper.fromEntityToDTO(exam);
+        Exam exam = IexamRepositry.findById(id).orElseThrow();
+
+        Courses courses = IcoursesRepositry.getCourseByCourse_code(examDTO.getCourse_code());
+        if (courses == null) throw new RuntimeException("Course Must be provided");
+        Classes classes = IclassesRepositry.getClassesByName(examDTO.getClass_name());
+        if (classes == null) throw new RuntimeException("Classes Must be provided");
+        Teacher teacher = IteacherRepositry.getTeacherByTeacher_id(examDTO.getTeacher_code());
+        if (teacher == null) throw new RuntimeException("Teacher Must be provided");
+
+        exam.setCourses(courses);
+        exam.setClasses(classes);
+        exam.setTeacher(teacher);
+        exam.setDate(examDTO.getDate());
+
+        Exam savedExam = IexamRepositry.save(exam);
+
+        return ExamMapper.fromEntityToDTO(savedExam);
     }
 
     @Override
     public void deleteExam(Long id) {
-        examRepositry.deleteById(id);
+        IexamRepositry.deleteById(id);
     }
-    
+
+    @Override
+    public List<ExamDTO> getExamsByClassName(String class_name) {
+        List<Exam> exams = IexamRepositry.getExamByClassName(class_name);
+        return exams.stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ExamDTO> getExamsByTeacherCode(String teacher_code) {
+        List<Exam> exams = IexamRepositry.getExamByTeacherCode(teacher_code);
+        return exams.stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ExamDTO> getExamsByCourseCode(String course_code) {
+        List<Exam> exams = IexamRepositry.getExamByCourseCode(course_code);
+        return exams.stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
 }

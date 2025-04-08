@@ -46,6 +46,7 @@ public class ParentController {
 
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<ParentDTO> updateParent(@PathVariable final Long id, @RequestBody final ParentDTO parentDTO){
+        parentDTO.setId(id);
         final boolean isExists = parentServices.isExists(parentDTO);
         if (isExists) {
             ParentDTO updatedParent = parentServices.updateParent(id, parentDTO);

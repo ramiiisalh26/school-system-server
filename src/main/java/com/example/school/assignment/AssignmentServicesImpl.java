@@ -66,7 +66,7 @@ public class AssignmentServicesImpl implements IAssignmentServices{
         Assignment assignment = assignmentRespositry.findById(id).orElseThrow();
 
             assignment.setClasses(assignmentDTO.getClasses());
-            assignment.setCourses(assignmentDTO.getSubjects());
+            assignment.setCourses(assignmentDTO.getCourses());
             assignment.setTeacher(assignmentDTO.getTeacher());
             assignment.setDueDate(assignmentDTO.getDueDate());
             assignmentRespositry.save(assignment);

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/subjects")
+@RequestMapping("/api/v1/courses")
 public class CoursesController {
     
     private final ICoursesServices IcoursesServices;
@@ -27,49 +27,45 @@ public class CoursesController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<List<CoursesDTO>> addSubjects(@RequestBody final List<CoursesDTO> coursesDTOS){
+    public ResponseEntity<List<CoursesDTO>> addCourses(@RequestBody final List<CoursesDTO> coursesDTOS){
         System.out.println(coursesDTOS);
-        final List<CoursesDTO> savedSujects = IcoursesServices.addManyCourses(coursesDTOS);
-        return new ResponseEntity<List<CoursesDTO>>(savedSujects,HttpStatus.CREATED);
+        final List<CoursesDTO> savedCourses = IcoursesServices.addManyCourses(coursesDTOS);
+        return new ResponseEntity<>(savedCourses,HttpStatus.CREATED);
     } 
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CoursesDTO> getSubjectById(@PathVariable final Long id){
-        Optional<CoursesDTO> foundedSubject = IcoursesServices.findCourseById(id);
-
-        if (foundedSubject.isPresent()) {
-            return new ResponseEntity<CoursesDTO>(foundedSubject.get(),HttpStatus.OK);
-        }
-
-        return new ResponseEntity<CoursesDTO>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<CoursesDTO> getCourseById(@PathVariable final Long id){
+        Optional<CoursesDTO> foundedCourse = IcoursesServices.findCourseById(id);
+        
+        return foundedCourse.map(coursesDTO -> new ResponseEntity<>(coursesDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<List<CoursesDTO>> getAllSubjects(){
-        return new ResponseEntity<List<CoursesDTO>>(IcoursesServices.getAllCourses(),HttpStatus.OK);
+    public ResponseEntity<List<CoursesDTO>> getAllCourses(){
+        return new ResponseEntity<>(IcoursesServices.getAllCourses(),HttpStatus.OK);
     }
 
     @PutMapping(path = "update/{id}")
-    public ResponseEntity<CoursesDTO> updateSubject(@PathVariable final Long id, @RequestBody final CoursesDTO coursesDTO){
+    public ResponseEntity<CoursesDTO> updateCourse(@PathVariable final Long id, @RequestBody final CoursesDTO coursesDTO){
         final boolean isExist = IcoursesServices.isCoursesExists(coursesDTO);
 
         if (isExist) {
-            final CoursesDTO updateSubjects = IcoursesServices.updateCourses(id, coursesDTO);
-            return new ResponseEntity<CoursesDTO>(updateSubjects,HttpStatus.OK);
+            final CoursesDTO updateCourses = IcoursesServices.updateCourses(id, coursesDTO);
+            return new ResponseEntity<>(updateCourses,HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CoursesDTO> deleteSubject(@PathVariable final Long id){
+    public ResponseEntity<CoursesDTO> deleteCourse(@PathVariable final Long id){
         IcoursesServices.deleteCourses(id);
-        return new ResponseEntity<CoursesDTO>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/getAllSujectsByTeacher_id/{id}")
-    public ResponseEntity<List<CoursesDTO>> getAllSujectsByTeacher_id(@PathVariable final Long id){
-        return new ResponseEntity<List<CoursesDTO>>(IcoursesServices.getAllSujectsByTeacher_id(id),HttpStatus.OK);
+    @GetMapping("/getAllCoursesByTeacher_id/{id}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByTeacher_id(@PathVariable final Long id){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByTeacher_id(id),HttpStatus.OK);
     }
 
 }

@@ -65,7 +65,7 @@ public class SecurityConfiguration {
         "/api/v1/lesson/**",
         "/api/v1/parent/**",
         "/api/v1/result/**",
-        "/api/v1/subjects/**",
+        "/api/v1/courses/**",
         "/api/v1/auth/**",
         "/v2/api-docs",
         "/v3/api-docs",
@@ -113,7 +113,6 @@ public class SecurityConfiguration {
                 .requestMatchers(POST,"/api/v1/dashboard/student/**").hasAnyAuthority(STUDENT_CREATE.name(),TEACHER_CREATE.name(),PARENT_CREATE.name(),ADMIN_CREATE.name())
                 .requestMatchers(PUT,"/api/v1/dashboard/student/**").hasAnyAuthority(STUDENT_UPDATE.name(),PARENT_UPDATE.name(),ADMIN_UPDATE.name(),TEACHER_UPDATE.name())
                 .requestMatchers(DELETE, "/api/v1/dashboard/student/**").hasAnyAuthority(STUDENT_DELETE.name(),TEACHER_DELETE.name(),ADMIN_DELETE.name())
-                
                 .anyRequest()
                 .authenticated()   
             )

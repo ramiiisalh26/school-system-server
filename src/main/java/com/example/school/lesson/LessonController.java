@@ -19,46 +19,61 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/lesson")
 public class LessonController {
     
-    private ILessonServices lessonServices;
+    private final ILessonServices IlessonServices;
 
     @Autowired
-    public LessonController(final ILessonServices lessonServices){
-        this.lessonServices = lessonServices;
+    public LessonController(final ILessonServices IlessonServices){
+        this.IlessonServices = IlessonServices;
     }
 
     @PostMapping(path = "/add")
     public ResponseEntity<List<LessonDTO>> addManyLessons(@RequestBody final List<LessonDTO> lessonDTO){
-        List<LessonDTO> savedLessons = lessonServices.addManyLessons(lessonDTO);
-        return new ResponseEntity<List<LessonDTO>>(savedLessons,HttpStatus.CREATED);
+        List<LessonDTO> savedLessons = IlessonServices.addManyLessons(lessonDTO);
+        return new ResponseEntity<>(savedLessons,HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<LessonDTO> getLessonById(@PathVariable final Long id){
-        Optional<LessonDTO> lesson = lessonServices.getLessonById(id);
-        if (lesson.isPresent()) {
-            return new ResponseEntity<LessonDTO>(lesson.get(),HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<LessonDTO> lesson = IlessonServices.getLessonById(id);
+        return lesson.map(lessonDTO -> new ResponseEntity<>(lessonDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<LessonDTO>> getAllLessons(){
-        return new ResponseEntity<List<LessonDTO>>(lessonServices.getAllLessons(),HttpStatus.OK);
+        return new ResponseEntity<>(IlessonServices.getAllLessons(),HttpStatus.OK);
     } 
 
     @PutMapping(path = "/update/{id}")
     public ResponseEntity<LessonDTO> updateLesson(@PathVariable final Long id,@RequestBody final LessonDTO lessonDTO){
-        final boolean isExist = lessonServices.isExist(lessonDTO);
+        final boolean isExist = IlessonServices.isExist(lessonDTO);
         if (isExist) {
-            LessonDTO updateLesson = lessonServices.updateLessons(id, lessonDTO);
-            return new ResponseEntity<LessonDTO>(updateLesson,HttpStatus.OK);
+            LessonDTO updateLesson = IlessonServices.updateLessons(id, lessonDTO);
+            return new ResponseEntity<>(updateLesson,HttpStatus.OK);
         }
-        return new ResponseEntity<LessonDTO>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<LessonDTO> deleteLesson(@PathVariable final Long id){
-        lessonServices.deleteLessoyId(id);
-        return new ResponseEntity<LessonDTO>(HttpStatus.OK);
+        IlessonServices.deleteLessonById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getLessonByCourseCode/{course_code}")
+    public ResponseEntity<List<LessonDTO>> getLessonByCourseCode(@PathVariable final String course_code){
+       List<LessonDTO> lessonDTOS = IlessonServices.getLessonByCourseCode(course_code);
+       return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getLessonByClassName/{class_name}")
+    public ResponseEntity<List<LessonDTO>> getLessonByClassName(@PathVariable final String class_name){
+        List<LessonDTO> lessonDTOS = IlessonServices.getLessonByClassName(class_name);
+        return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
+    }
+
+    @GetMapping(path = "getLessonByTeacherCode/{teacher_code}")
+    public ResponseEntity<List<LessonDTO>> getLessonByTeacherCode(@PathVariable final String teacher_code){
+        List<LessonDTO> lessonDTOS = IlessonServices.getLessonByTeacherCode(teacher_code);
+        return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
     }
 }

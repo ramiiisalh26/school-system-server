@@ -1,5 +1,6 @@
 package com.example.school.teacher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // import com.example.school.address.Address;
@@ -98,6 +99,7 @@ public class Teacher {
             inverseJoinColumns = @JoinColumn(name = "classes_id")
     )
     @ToString.Exclude
+    @JsonIgnore
     private List<Classes> classes;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -105,5 +107,5 @@ public class Teacher {
     private Address address;
 
     @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
-    private List<Result> result;
+    private List<Result> result = new ArrayList<>();
 }

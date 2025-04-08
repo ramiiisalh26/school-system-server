@@ -1,7 +1,7 @@
 package com.example.school.lesson;
 
 import com.example.school.classes.Classes;
-import com.example.school.Courses.Courses;
+import com.example.school.courses.Courses;
 import com.example.school.teacher.Teacher;
 
 import jakarta.persistence.Entity;
@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -34,11 +36,13 @@ public class Lesson {
     private Long id;
 
     @OneToOne
-    private Courses subject;
+    private Courses courses;
 
     @OneToOne
     private Classes classes;
     
     @OneToOne
     private Teacher teacher;
+
+    private Date startDate;
 }

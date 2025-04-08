@@ -17,6 +17,11 @@ public interface ILessonServices {
 
     LessonDTO updateLessons(Long id,LessonDTO lessonDTO);
 
-    void deleteLessoyId(Long id);
+    void deleteLessonById(Long id);
 
+    List<LessonDTO> getLessonByCourseCode(String course_code);
+
+    List<LessonDTO> getLessonByClassName(String class_name);
+
+    List<LessonDTO> getLessonByTeacherCode(String teacher_code);
 }

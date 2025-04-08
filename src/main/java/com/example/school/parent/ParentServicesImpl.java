@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.school.address.*;
+import com.example.school.security.token.ITokenServices;
 import com.example.school.student.*;
 import com.example.school.user.*;
 import jakarta.transaction.Transactional;
@@ -22,19 +23,22 @@ public class ParentServicesImpl implements IParentServices {
     private final IAddressRespositry IaddressRepositry;
     private final IUserServices IuserServices;
     private final PasswordEncoder passwordEncoder;
+    private final ITokenServices ItokenServices;
     @Autowired
     public ParentServicesImpl(
             final IParentRepositry IparentRepositry,
             final IStudentRepositry IstudentRepositry,
             final IAddressRespositry IaddressRepositry,
             final IUserServices IuserServices,
-            final PasswordEncoder passwordEncoder
+            final PasswordEncoder passwordEncoder,
+            final ITokenServices ItokenServices
     ) {
         this.IparentRepositry = IparentRepositry;
         this.IstudentRepositry = IstudentRepositry;
         this.IaddressRepositry = IaddressRepositry;
         this.IuserServices = IuserServices;
         this.passwordEncoder = passwordEncoder;
+        this.ItokenServices = ItokenServices;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ParentServicesImpl implements IParentServices {
     @Override
     public List<ParentDTO> getAllParent() {
         List<Parent> parents = IparentRepositry.findAll();
+//        System.out.println(parents.toString());
         return parents.stream().map(ParentMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
@@ -72,7 +77,6 @@ public class ParentServicesImpl implements IParentServices {
                 .role(Role.PARENT)
                 .build();
 
-        System.out.println(user);
         User savedUser = IuserServices.signUp(user);
 
         Address address = Address.builder()
@@ -105,26 +109,27 @@ public class ParentServicesImpl implements IParentServices {
 
     @Override
     public ParentDTO updateParent(Long id, ParentDTO parentDTO) {
-
         Parent parent = IparentRepositry.findById(id).orElseThrow();
-        List<Student> students = IparentRepositry.getStudentByParentId(parent.getId());
+
         Address address = IaddressRepositry.findById(parent.getAddress().getId()).orElseThrow();
 
         parent.setFirst_name(parentDTO.getFirst_name());
         parent.setMiddle_name(parentDTO.getMiddle_name());
         parent.setLast_name(parentDTO.getLast_name());
-        parent.setEmail(parentDTO.getEmail());
         parent.setPhone(parentDTO.getPhone());
 
-        for (int i = 0; i < students.size(); i++) {
-            if (students.get(i).getStudent_id().equals(parentDTO.getStudents().get(i).getStudent_id())) {
-                students.get(i).setEmail(parentDTO.getStudents().get(i).getEmail());
-                students.get(i).setPhone(parentDTO.getStudents().get(i).getPhone());
-                students.get(i).setPhoto(parentDTO.getStudents().get(i).getPhoto());
-            }
-        }
+//        for (int i = 0; i < students.size(); i++) {
+//            if (students.get(i).getStudent_id().equals(parentDTO.getStudents().get(i).getStudent_id())) {
+//                students.get(i).setEmail(parentDTO.getStudents().get(i).getEmail() == null ? parent.getStudent().get(i).getEmail() : parentDTO.getStudents().get(i).getEmail());
+//                students.get(i).setPhone(parentDTO.getStudents().get(i).getPhone() == null ? parent.getStudent().get(i).getPhone() : parentDTO.getStudents().get(i).getPhone());
+//                students.get(i).setPhoto(parentDTO.getStudents().get(i).getPhoto() == null ? parent.getStudent().get(i).getPhoto() : parentDTO.getStudents().get(i).getPhoto());
+//                students.get(i).setFirst_name(parentDTO.getStudents().get(i).getFirst_name() == null ? parent.getStudent().get(i).getFirst_name() : parentDTO.getStudents().get(i).getFirst_name());
+//                students.get(i).setMiddle_name(parentDTO.getStudents().get(i).getMiddle_name() == null ? parent.getStudent().get(i).getMiddle_name() : parentDTO.getStudents().get(i).getMiddle_name());
+//                students.get(i).setLast_name(parentDTO.getStudents().get(i).getLast_name() == null ? parent.getStudent().get(i).getLast_name() : parentDTO.getStudents().get(i).getLast_name());
+//            }
+//        }
 
-        parent.setStudent(students);
+//        parent.setStudent(students);
 
         address.setCity(parentDTO.getAddress().getCity());
         address.setCountry(parentDTO.getAddress().getCountry());
@@ -147,6 +152,23 @@ public class ParentServicesImpl implements IParentServices {
 
     @Override
     public void deleteById(Long id) {
+
+        Parent parent = IparentRepositry.findById(id).orElseThrow();
+
+        parent.getStudent().forEach(student -> student.setParents(null));
+
+        Long idAddress = parent.getAddress().getId();
+        Long idUser = parent.getAddress().getUser().getId();
+
+        parent.setAddress(null);
+
+        IaddressRepositry.deleteById(idAddress);
+        IuserServices.deleteUserById(idUser);
+
+        if (!ItokenServices.findAllToken(idUser).isEmpty()) {
+            ItokenServices.deleteAllTokenByUserId(idUser);
+        }
+
         IparentRepositry.deleteById(id);
     }
 
