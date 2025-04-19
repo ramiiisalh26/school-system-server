@@ -10,6 +10,9 @@ public interface IExamRepositry extends JpaRepository<Exam, Long>{
     @Query("SELECT e FROM Exam e JOIN e.courses c WHERE c.course_code = :course_code ")
     List<Exam> getExamByCourseCode(String course_code);
 
+    @Query("SELECT e FROM Exam e JOIN e.courses c WHERE c.name = :course_name")
+    List<Exam> getExamByCourseName(String course_name);
+
     @Query("SELECT e FROM Exam e JOIN e.classes c WHERE c.name = :class_name")
     List<Exam> getExamByClassName(String class_name);
 

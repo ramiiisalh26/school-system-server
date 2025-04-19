@@ -1,18 +1,22 @@
 package com.example.school.student;
 
-import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.school.address.*;
+import com.example.school.assignment.IAssignmentRepository;
 import com.example.school.classes.*;
 //import com.example.school.security.cache.RedisStudentCacheService;
+import com.example.school.courses.Courses;
+import com.example.school.courses.CoursesDTO;
+import com.example.school.courses.CoursesMapper;
+import com.example.school.parent.IParentRepositry;
+import com.example.school.result.IResultRepositry;
 import com.example.school.security.token.ITokenServices;
 import com.example.school.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,9 @@ public class StudentServicesImpl implements IStudentServices{
     private final PasswordEncoder passwordEncoder;
     private final IClassesRepositry IclassesRepositry;
     private final ITokenServices ItokenServices;
+    private final IParentRepositry IparentRepositry;
+    private final IResultRepositry IresultRepositry;
+    private final IAssignmentRepository IassignmentRepository;
 //    private final RedisStudentCacheService redisStudentCacheService;
 
     @Autowired
@@ -34,7 +41,10 @@ public class StudentServicesImpl implements IStudentServices{
         final IUserServices IuserServices,
         final PasswordEncoder passwordEncoder,
         final IClassesRepositry IclassesRepositry,
-        final ITokenServices ItokenServices
+        final ITokenServices ItokenServices,
+        final IResultRepositry IresultRepositry,
+        final IAssignmentRepository IassignmentRepositry,
+        final IParentRepositry IparentRepositry
 //        final RedisStudentCacheService redisStudentCacheService
     ){
         this.IstudentRepositry = IstudentRepositry;
@@ -43,6 +53,9 @@ public class StudentServicesImpl implements IStudentServices{
         this.passwordEncoder = passwordEncoder;
         this.IclassesRepositry = IclassesRepositry;
         this.ItokenServices = ItokenServices;
+        this.IresultRepositry = IresultRepositry;
+        this.IassignmentRepository = IassignmentRepositry;
+        this.IparentRepositry = IparentRepositry;
 //        this.redisStudentCacheService = redisStudentCacheService;
     }
     
@@ -112,18 +125,35 @@ public class StudentServicesImpl implements IStudentServices{
 
         Student student = IstudentRepositry.findById(id).orElseThrow();
 
-        student.getClasses().forEach(classes -> classes.setStudent(null));
+        student.getClasses().forEach((classes) ->{
+//            IclassesRepositry.deleteById(classes.getId());
+            classes.setStudent(null);
+        });
 
         Long idAddress = student.getAddress().getId();
         Long idUser = student.getAddress().getUser().getId();
 
+        student.getAddress().setUser(null);
         student.setAddress(null);
-
-        student.setParents(null);
 
         IaddressRepositry.deleteById(idAddress);
 
         IuserServices.deleteUserById(idUser);
+
+        student.getParents().forEach(parent -> {
+//            IparentRepositry.deleteById(parent.getId());
+            parent.setStudent(null);
+        });
+
+        student.getResults().forEach(result ->{
+            IresultRepositry.deleteById(result.getId());
+            result.setStudent(null);
+        });
+
+        student.getAssignments().forEach(assignment ->{
+            IassignmentRepository.deleteById(assignment.getId());
+            assignment.setStudent(null);
+        });
 
         if (!ItokenServices.findAllToken(id).isEmpty()) {
             ItokenServices.deleteAllTokenByUserId(idUser);
@@ -172,6 +202,7 @@ public class StudentServicesImpl implements IStudentServices{
                         .orElseThrow(() -> new RuntimeException( "Class with ID " + classesDTO.getId() + " not found")))
                         .collect(Collectors.toList()));
 
+
         student.setFirst_name(studentDTO.getFirst_name());
         student.setMiddle_name(studentDTO.getMiddle_name());
         student.setLast_name(studentDTO.getLast_name());
@@ -185,11 +216,18 @@ public class StudentServicesImpl implements IStudentServices{
         return StudentMapper.fromEntityToDTO(savedStudent);
     }
 
+
     @Override
-    public List<ClassesDTO> getStudentClasses(Long id) {
-        List<Classes> classes = IstudentRepositry.getStudentClasses(id);
-        return classes.stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    public Optional<StudentDTO> getByStudentCode(String student_code) {
+        Optional<Student> student = Optional.ofNullable(IstudentRepositry.getByStudentCode(student_code));
+        return student.map(StudentMapper::fromEntityToDTO);
     }
+
+    @Override
+    public List<StudentDTO> getStudentByParentId(Long id) {
+        return IstudentRepositry.getStudentByParentId(id).stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
 
     private String generateStudentID(int year) {
 

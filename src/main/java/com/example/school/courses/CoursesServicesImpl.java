@@ -79,11 +79,51 @@ public class CoursesServicesImpl implements ICoursesServices {
     public CoursesDTO getCoursesByName(String courseName) {
         return CoursesMapper.fromEntityToDTO(IcoursesRepositry.getCourseByName(courseName));
     }
-    
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByDepartment(String department) {
+        return IcoursesRepositry.getAllCoursesByDepartment(department).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
     @Override
     public List<CoursesDTO> getAllCoursesByTeacher_id(Long id){
         List<Courses> courses = IcoursesRepositry.getAllCoursesByTeacher_id(id);
         return courses.stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByTeacherCode(String teacher_code) {
+        return IcoursesRepositry.getAllCoursesByTeacherCode(teacher_code).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByStudentId(Long student_id) {
+        return IcoursesRepositry.getAllCoursesByStudentId(student_id).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByStudentCode(String student_code) {
+        return IcoursesRepositry.getAllCoursesByStudentCode(student_code).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByResultsId(Long result_id) {
+        return IcoursesRepositry.getAllCoursesByResultsId(result_id).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByAssignmentId(Long assignment_id) {
+        return IcoursesRepositry.getAllCoursesByAssignmentId(assignment_id).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByClassesId(Long class_id) {
+        return IcoursesRepositry.getAllCoursesByClassesId(class_id).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoursesDTO> getAllCoursesByClassesName(String class_name) {
+        return IcoursesRepositry.getAllCoursesByClassesName(class_name).stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     private String genereateCourseCode(String prefix){
@@ -99,7 +139,4 @@ public class CoursesServicesImpl implements ICoursesServices {
         return prefix + newNumber;
     }
 
-//    public void deleteTeacher_course(Long id){
-//        IcoursesRepositry.deleteTeacher_course(id);
-//    }
 }

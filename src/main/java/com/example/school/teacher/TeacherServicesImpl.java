@@ -133,7 +133,7 @@ public class TeacherServicesImpl implements ITeacherServices{
 
         Address gterAddress = IaddressRepositry.findById(teacherDTO.getAddress().getId()).get();
 
-        teacher.setClasses(teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()));
+//        teacher.setClasses(teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()));
         teacher.setCourses(teacherDTO.getCourses().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()));
 
         Address address = Address.builder()
@@ -200,13 +200,13 @@ public class TeacherServicesImpl implements ITeacherServices{
 
     @Override
     public List<CoursesDTO> getTeacherCourses(Long id){
-        List<Courses> Courses = IteacherRepositry.getTeacherByCourseId(id);
+        List<Courses> Courses = IcoursesRepositry.getAllCoursesByTeacher_id(id);
         return  Courses.stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<ClassesDTO> getTeacherClasses(Long id){
-        List<Classes> classes = IteacherRepositry.getTeacherByClassesId(id);
+        List<Classes> classes = IclassesRepositry.getClassesByTeacher_id(id);
         return  classes.stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
     

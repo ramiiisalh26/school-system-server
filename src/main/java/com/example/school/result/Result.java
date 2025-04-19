@@ -7,6 +7,8 @@ import com.example.school.student.Student;
 import com.example.school.courses.Courses;
 import com.example.school.teacher.Teacher;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,18 +40,22 @@ public class Result {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @JsonBackReference
     private Courses courses;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonBackReference
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
+    @JsonBackReference
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
+    @JsonBackReference
     private Classes classes;
 
     private Date date;

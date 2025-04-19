@@ -32,7 +32,7 @@ public class TeacherController {
     public  TeacherController(){}
 
     @PostMapping(path = "/add")
-    public ResponseEntity<List<TeacherDTO>> addTeachers(@RequestBody final List<TeacherDTO> teachersDTO){
+    public ResponseEntity<List<TeacherDTO>> addTeacher(@RequestBody final List<TeacherDTO> teachersDTO){
         return new ResponseEntity<List<TeacherDTO>>(teacherServices.addManyTeacher(teachersDTO),HttpStatus.CREATED);
     }
 

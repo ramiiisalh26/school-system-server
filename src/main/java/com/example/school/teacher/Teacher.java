@@ -9,8 +9,10 @@ import com.example.school.assignment.Assignment;
 import com.example.school.classes.Classes;
 import com.example.school.result.Result;
 import com.example.school.courses.Courses;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,16 +25,12 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -92,6 +90,7 @@ public class Teacher {
     @JoinTable(name = "teacher_courses",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
+    @JsonBackReference
     private List<Courses> courses;
     
     @ManyToMany(fetch = FetchType.LAZY)
@@ -100,16 +99,19 @@ public class Teacher {
             inverseJoinColumns = @JoinColumn(name = "classes_id")
     )
     @ToString.Exclude
+//    @JsonManagedReference
     @JsonIgnore
-    private List<Classes> classes;
+    private List<Classes> classes =  new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Address address;
 
     @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Result> result = new ArrayList<>();
 
     @OneToMany(mappedBy = "teacher",fetch = FetchType.LAZY)
-    private List<Assignment> assignments;
+    @JsonManagedReference
+    private List<Assignment> assignments = new ArrayList<>();
 }

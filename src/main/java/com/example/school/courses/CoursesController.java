@@ -40,6 +40,11 @@ public class CoursesController {
         return foundedCourse.map(coursesDTO -> new ResponseEntity<>(coursesDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping(path = "/getCoursesByName/{course_name}")
+    public ResponseEntity<CoursesDTO> getCoursesByName(@PathVariable String course_name){
+        return new ResponseEntity<>(IcoursesServices.getCoursesByName(course_name),HttpStatus.OK);
+    }
+
     @GetMapping(path = "/all")
     public ResponseEntity<List<CoursesDTO>> getAllCourses(){
         return new ResponseEntity<>(IcoursesServices.getAllCourses(),HttpStatus.OK);
@@ -63,9 +68,47 @@ public class CoursesController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/getAllCoursesByTeacher_id/{id}")
+    @GetMapping(path = "/getAllCoursesByDepartment/{department}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByDepartment(@PathVariable final String department){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByDepartment(department),HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllCoursesByTeacherId/{id}")
     public ResponseEntity<List<CoursesDTO>> getAllCoursesByTeacher_id(@PathVariable final Long id){
         return new ResponseEntity<>(IcoursesServices.getAllCoursesByTeacher_id(id),HttpStatus.OK);
     }
 
+    @GetMapping(path = "/getAllCoursesByTeacherCode/{teacher_code}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByTeacherCode(@PathVariable final String teacher_code){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByTeacherCode(teacher_code),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllCoursesByStudentId/{student_id}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByStudentId(@PathVariable final Long student_id){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByStudentId(student_id),HttpStatus.OK);
+    }
+    @GetMapping(path = "/getAllCoursesByStudentCode/{student_code}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByStudentCode(@PathVariable final String student_code){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByStudentCode(student_code),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllCoursesByResultsId/{result_id}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByResultsId(@PathVariable final Long result_id){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByResultsId(result_id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllCoursesByAssignmentId/{assignment_id}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByAssignmentId(@PathVariable final Long assignment_id){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByAssignmentId(assignment_id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllCoursesByClassesId/{class_id}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByClassesId(@PathVariable final Long class_id){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByClassesId(class_id),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllCoursesByClassesName/{class_name}")
+    public ResponseEntity<List<CoursesDTO>> getAllCoursesByClassesName(@PathVariable final String class_name){
+        return new ResponseEntity<>(IcoursesServices.getAllCoursesByClassesName(class_name),HttpStatus.OK);
+    }
 }

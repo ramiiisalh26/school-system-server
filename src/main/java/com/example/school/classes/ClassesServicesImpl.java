@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClassesServicesImpl implements IClassesServices{
 
-    private final IClassesRepositry classesRepositry;
+    private final IClassesRepositry IclassesRepositry;
 
     @Autowired
-    public ClassesServicesImpl(IClassesRepositry classesRepositry){
-        this.classesRepositry = classesRepositry;
+    public ClassesServicesImpl(IClassesRepositry IclassesRepositry){
+        this.IclassesRepositry = IclassesRepositry;
     }
 
     @Override
     public Boolean isClassExists(ClassesDTO classesDTO) {
-        return classesRepositry.existsById(classesDTO.getId());
+        return IclassesRepositry.existsById(classesDTO.getId());
     }
 
     @Override
@@ -38,71 +38,83 @@ public class ClassesServicesImpl implements IClassesServices{
 
         Classes classes = ClassesMapper.fromDTOToEntity(classesDTO);
 
-        Classes savedClasses = classesRepositry.save(classes);
+        Classes savedClasses = IclassesRepositry.save(classes);
 
         return ClassesMapper.fromEntityToDTO(savedClasses);
     }
 
     @Override
     public Optional<ClassesDTO> findById(Long id) {
-        Optional<Classes> foundedClass = classesRepositry.findById(id);
+        Optional<Classes> foundedClass = IclassesRepositry.findById(id);
 
-        if (foundedClass.isPresent()) {
-            return Optional.of(ClassesMapper.fromEntityToDTO(foundedClass.get()));
-        }
-
-        return Optional.empty();
-
+        return foundedClass.map(ClassesMapper::fromEntityToDTO);
     }
 
     @Override
     public List<ClassesDTO> getAllClasses() {
-        List<Classes> classes = classesRepositry.findAll();
-        List<ClassesDTO> classesDTOs = classes.stream().map(classe -> ClassesMapper.fromEntityToDTO(classe)).collect(Collectors.toList());
-        return classesDTOs;
+        List<Classes> classes = IclassesRepositry.findAll();
+        return classes.stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteClassbyId(Long id) {
-        classesRepositry.deleteById(id);
+    public void deleteClassesById(Long id) {
+        IclassesRepositry.deleteById(id);
     }
 
     @Override
     public ClassesDTO updateClass(Long id, ClassesDTO classesDTO) {
         
-        Classes classes = classesRepositry.findById(id).orElseThrow();
+        Classes classes = IclassesRepositry.findById(id).orElseThrow();
 
-        if (classes != null) {
-            classes.setName(classesDTO.getName());
-            classes.setGrade(classesDTO.getGrade());
-            classes.setCapacity(classesDTO.getCapacity());
-            classes.setSuper_visor(classesDTO.getSuper_visor());
-            classesRepositry.save(classes);
-        }        
+        classes.setName(classesDTO.getName());
+        classes.setGrade(classesDTO.getGrade());
+        classes.setCapacity(classesDTO.getCapacity());
+        classes.setSuper_visor(classesDTO.getSuper_visor());
+        IclassesRepositry.save(classes);
+
         return ClassesMapper.fromEntityToDTO(classes);
     }
 
     @Override
     public ClassesDTO getClassesByName(String name) {
-        return ClassesMapper.fromEntityToDTO(classesRepositry.getClassesByName(name));
+        return ClassesMapper.fromEntityToDTO(IclassesRepositry.getClassesByName(name));
     }
 
     
     @Override
     public List<ClassesDTO> getClassesByTeacherId(Long tracher_id) {
         System.out.println("hello");
-        List<Classes> classes = classesRepositry.getClassesByTeacher_id(tracher_id);
+        List<Classes> classes = IclassesRepositry.getClassesByTeacher_id(tracher_id);
         // System.out.println(classes.get(0));
         List<ClassesDTO> classesDTOs = new ArrayList<ClassesDTO>();
         classes.forEach(cla -> {
             classesDTOs.add(ClassesMapper.fromEntityToDTO(cla));
         });
-        // System.out.println(classesDTOs);
         return classesDTOs;
     }
-    
-//    @Override
-//    public void setTeacherIdToBeNull(Long id){
-//        classesRepositry.setTeacherIdToBeNull(id);
-//    }
+
+    @Override
+    public List<ClassesDTO> getClassesByTeacher_code(String teacher_code) {
+        return IclassesRepositry.getClassesByTeacher_code(teacher_code).stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassesDTO> getClassesByCourses_code(String course_code) {
+        return IclassesRepositry.getClassesByCourses_code(course_code).stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassesDTO> getClassesByStudent_id(Long student_id) {
+        return IclassesRepositry.getClassesByStudent_id(student_id).stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassesDTO> getClassesByStudent_code(String student_code) {
+        return IclassesRepositry.getClassesByStudent_code(student_code).stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClassesDTO> getClassesByResults_id(Long result_id) {
+        return IclassesRepositry.getClassesByResults_id(result_id).stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
 }

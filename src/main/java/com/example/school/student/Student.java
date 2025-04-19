@@ -4,16 +4,21 @@ import com.example.school.address.Address;
 import com.example.school.assignment.Assignment;
 import com.example.school.classes.Classes;
 
+import com.example.school.courses.Courses;
 import com.example.school.parent.Parent;
 import com.example.school.result.Result;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -85,19 +90,30 @@ public class Student {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "class_id")
     )
-    @ToString.Exclude
-    @JsonIgnore
+    @JsonBackReference
     private List<Classes> classes = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "student_code"),
+            inverseJoinColumns = @JoinColumn(name = "course_code")
+    )
+    @JsonBackReference
+    private List<Courses> courses = new ArrayList<>();
 
     @OneToOne
     private Address address;
 
     @ManyToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Parent> parents = new ArrayList<>();
 
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Result> results = new ArrayList<>();
 
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
-    private List<Assignment> assignments;
+    @JsonManagedReference
+    private List<Assignment> assignments = new ArrayList<>();
 }

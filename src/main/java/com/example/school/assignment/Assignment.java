@@ -7,6 +7,7 @@ import com.example.school.courses.Courses;
 import com.example.school.student.Student;
 import com.example.school.teacher.Teacher;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,15 +33,21 @@ public class Assignment {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private Courses courses;
     
     @OneToOne
+    @JoinColumn(
+            name = "class_id"
+    )
     private Classes classes;
 
     @ManyToOne
+    @JsonBackReference
     private Teacher teacher;
 
     @ManyToOne
+    @JsonBackReference
     private Student student;
 
     private Date dueDate;

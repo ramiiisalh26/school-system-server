@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/assignment")
 public class AssignmentController {
     
-    private IAssignmentServices assignmentServices;
+    private final IAssignmentServices assignmentServices;
 
     @Autowired
     public AssignmentController(final IAssignmentServices assignmentServices){
@@ -28,8 +28,8 @@ public class AssignmentController {
 
     @PostMapping(path = "/add")
     public ResponseEntity<List<AssignmentDTO>> addManyAssignment(@RequestBody final List<AssignmentDTO> assignmentDTO){
-        final List<AssignmentDTO> savedAssingment = assignmentServices.addManyAssignment(assignmentDTO);
-        return new ResponseEntity<List<AssignmentDTO>>(savedAssingment,HttpStatus.CREATED);
+        final List<AssignmentDTO> savedAssignment = assignmentServices.addManyAssignment(assignmentDTO);
+        return new ResponseEntity<List<AssignmentDTO>>(savedAssignment,HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/all")
@@ -40,10 +40,7 @@ public class AssignmentController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<AssignmentDTO> getAssignmentById(@PathVariable final Long id){
         final Optional<AssignmentDTO> isAssignmentExist = assignmentServices.getAssignmentById(id);
-        if (isAssignmentExist.isPresent()) {
-            return new ResponseEntity<AssignmentDTO>(isAssignmentExist.get(),HttpStatus.OK);
-        }
-        return new ResponseEntity<AssignmentDTO>(HttpStatus.NOT_FOUND);
+        return isAssignmentExist.map(assignmentDTO -> new ResponseEntity<>(assignmentDTO, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping(path = "/update/{id}")
@@ -63,7 +60,7 @@ public class AssignmentController {
     }
 
     @GetMapping(path = "/getByTeacherCode/{teacher_code}")
-    public ResponseEntity<List<AssignmentDTO>> getAllAssignmentByTeacherId(@PathVariable final String teacher_code){
+    public ResponseEntity<List<AssignmentDTO>> getAllAssignmentByTeacherCode(@PathVariable final String teacher_code){
         List<AssignmentDTO> assignments = assignmentServices.getAssignmentsByTeacherCode(teacher_code);
         return new ResponseEntity<>(assignments,HttpStatus.OK);
     }
