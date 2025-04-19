@@ -15,8 +15,8 @@ spring:
       # default-encoding: UTF-8
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=school;encrypt=false;trustServerCertificate=true
-    username: SA
-    password: 01126167002rR
+    username: rami
+    password: pass123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:

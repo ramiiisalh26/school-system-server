@@ -1,7 +1,9 @@
 package com.example.school.student;
 
 import com.example.school.address.AddressMapper;
+import com.example.school.assignment.AssignmentMapper;
 import com.example.school.classes.ClassesMapper;
+import com.example.school.result.ResultMapper;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -35,6 +37,8 @@ public class StudentMapper {
                 .email(student.getEmail())
                 .address(AddressMapper.fromEntityToDTO(student.getAddress()))
                 .classes(student.getClasses() == null ? new ArrayList<>() : student.getClasses().stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList()))
+                .results(student.getResults().stream().map(ResultMapper::fromEntityToDTO).collect(Collectors.toList()))
+                .assignments(student.getAssignments().stream().map(AssignmentMapper::fromEntityToDTO).collect(Collectors.toList()))
                 .build();
     }
 }

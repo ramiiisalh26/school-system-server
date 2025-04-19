@@ -1,6 +1,8 @@
 package com.example.school.student;
 
 import com.example.school.classes.ClassesDTO;
+import com.example.school.courses.Courses;
+import com.example.school.courses.CoursesDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,5 +23,8 @@ public interface IStudentServices {
 
     StudentDTO updateStudentById(Long id,StudentDTO studentDTO); 
 
-    List<ClassesDTO> getStudentClasses(Long id);
+    Optional<StudentDTO> getByStudentCode(String student_code);
+
+    List<StudentDTO> getStudentByParentId(Long id);
+
 }

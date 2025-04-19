@@ -3,13 +3,17 @@ package com.example.school.student;
 import com.example.school.address.Address;
 
 import com.example.school.address.AddressDTO;
+import com.example.school.assignment.AssignmentDTO;
 import com.example.school.classes.ClassesDTO;
-import lombok.Builder;
-import lombok.Data;
+import com.example.school.courses.CoursesDTO;
+import com.example.school.result.ResultDTO;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 public class StudentDTO {
     Long id;
@@ -23,5 +27,8 @@ public class StudentDTO {
     String phone;
     int grade;
     List<ClassesDTO> classes;
+    List<CoursesDTO> courses;
+    List<ResultDTO> results;
+    List<AssignmentDTO> assignments;
     AddressDTO address;
 }

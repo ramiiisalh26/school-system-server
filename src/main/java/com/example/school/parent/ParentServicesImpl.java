@@ -91,7 +91,7 @@ public class ParentServicesImpl implements IParentServices {
         Address savedAddress = IaddressRepositry.save(address);
 
         List<Student> students = parentDTO.getStudents().stream()
-                .map(student -> IstudentRepositry.FindByStudentID(student.getStudent_id()))
+                .map(student -> IstudentRepositry.getByStudentCode(student.getStudent_id()))
                 .toList();
 
         Parent parent = Parent.builder()
@@ -152,7 +152,6 @@ public class ParentServicesImpl implements IParentServices {
 
     @Override
     public void deleteById(Long id) {
-
         Parent parent = IparentRepositry.findById(id).orElseThrow();
 
         parent.getStudent().forEach(student -> student.setParents(null));
@@ -172,10 +171,5 @@ public class ParentServicesImpl implements IParentServices {
         IparentRepositry.deleteById(id);
     }
 
-    @Override
-    public List<StudentDTO> getStudentByParentId(Long id) {
-        List<Student> students = IparentRepositry.getStudentByParentId(id);
-        return students.stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList());
-    }
 
 }

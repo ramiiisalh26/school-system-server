@@ -21,6 +21,4 @@ public interface IParentServices {
 
     void deleteById(Long id);
 
-    List<StudentDTO> getStudentByParentId(Long id);
-
 }

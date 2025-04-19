@@ -8,6 +8,4 @@ import java.util.List;
 
 public interface IParentRepositry extends JpaRepository<Parent,Long>{
 
-    @Query("SELECT s FROM Student s JOIN s.parents p WHERE p.id = :id")
-    List<Student> getStudentByParentId(Long id);
 }

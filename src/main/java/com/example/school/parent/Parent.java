@@ -6,6 +6,8 @@ import java.util.List;
 import com.example.school.address.Address;
 import com.example.school.student.Student;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -69,6 +71,7 @@ public class Parent {
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
     @ToString.Exclude
+    @JsonManagedReference
     private List<Student> student = new ArrayList<>();
 
 }

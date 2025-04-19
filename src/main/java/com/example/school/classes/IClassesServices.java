@@ -13,15 +13,25 @@ public interface IClassesServices {
 
     Optional<ClassesDTO> findById(Long id);
 
+    ClassesDTO getClassesByName(String name);
+
     List<ClassesDTO> getAllClasses();
 
-    void deleteClassbyId(Long id);
+    void deleteClassesById(Long id);
 
     ClassesDTO updateClass(Long id, ClassesDTO classesDTO);
     
-    List<ClassesDTO> getClassesByTeacherId(Long tracher_id);
-    
-    ClassesDTO getClassesByName(String name);
+    List<ClassesDTO> getClassesByTeacherId(Long teacher_id);
+
+    List<ClassesDTO> getClassesByTeacher_code(String teacher_code);
+
+    List<ClassesDTO> getClassesByCourses_code(String course_code);
+
+    List<ClassesDTO> getClassesByStudent_id(Long student_id);
+
+    List<ClassesDTO> getClassesByStudent_code(String student_code);
+
+    List<ClassesDTO> getClassesByResults_id(Long result_id);
 
 //    void setTeacherIdToBeNull(Long id);
 

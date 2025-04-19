@@ -20,7 +20,6 @@ public class TeacherMapper {
             .address(AddressMapper.fromDTOToEntity(teacherDTO.getAddress()))
             .teacher_id(teacherDTO.getTeacher_id())
             .courses(teacherDTO.getCourses() == null ? new ArrayList<>() : teacherDTO.getCourses().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()))
-            .classes(teacherDTO.getClasses()== null ? new ArrayList<>() : teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()))
             .build();
     }
 
@@ -39,9 +38,6 @@ public class TeacherMapper {
             ? new ArrayList<>() 
             : teacher.getCourses().stream()
             .map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList()))
-            .classes(teacher.getClasses() == null 
-            ? new ArrayList<>() 
-            : teacher.getClasses().stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList()))
             .build();
     }
 }

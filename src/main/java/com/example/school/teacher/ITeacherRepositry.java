@@ -18,11 +18,11 @@ public interface ITeacherRepositry extends JpaRepository<Teacher,Long>{
     @Query("UPDATE Teacher t SET t.address.id = null WHERE t.address.id = :id")
     void setAddressIdToBeNull(Long id);
 
-    @Query("SELECT s FROM Courses s JOIN s.teachers t WHERE t.id = :id")
-    List<Courses> getTeacherByCourseId(Long id);
-
-    @Query("SELECT c FROM Classes c JOIN c.teacher t WHERE t.id = :id")
-    List<Classes> getTeacherByClassesId(Long id);
+//    @Query("SELECT s FROM Courses s JOIN s.teachers t WHERE t.id = :id")
+//    List<Courses> getTeacherByCourseId(Long id);
+//
+//    @Query("SELECT c FROM Classes c JOIN c.teacher t WHERE t.id = :id")
+//    List<Classes> getTeacherByClassesId(Long id);
 
     @Query("SELECT n FROM Teacher n WHERE n.teacher_id = :teacher_id ")
     Teacher getTeacherByTeacher_id(String teacher_id);

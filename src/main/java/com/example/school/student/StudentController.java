@@ -51,7 +51,7 @@ public class StudentController {
         return new ResponseEntity<>(IstudentServices.getAllStudent(),HttpStatus.OK);
     }
 
-    @PutMapping(path = "/update/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<StudentDTO> updateStudent(@PathVariable final Long id,@RequestBody final StudentDTO studentDTO){
         final boolean isExists = IstudentServices.isExists(studentDTO);
         if (isExists) {
@@ -67,9 +67,14 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = "/getStudentClasses/{id}")
-    public ResponseEntity<List<ClassesDTO>> getStudentClasses(@PathVariable final Long id){
-        List<ClassesDTO> classes = IstudentServices.getStudentClasses(id);
-        return new ResponseEntity<>(classes, HttpStatus.OK);
+    @GetMapping(path = "/{student_code}")
+    public ResponseEntity<StudentDTO> getStudentByStudentCode(@PathVariable final String student_code){
+        Optional<StudentDTO> student = Optional.of(IstudentServices.getByStudentCode(student_code).orElseThrow());
+        return new ResponseEntity<>(student.get(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getStudentByParentId/{parentId}")
+    public  ResponseEntity<List<StudentDTO>> getStudentByParentId(@PathVariable final Long parentId){
+        return new ResponseEntity<>(IstudentServices.getStudentByParentId(parentId),HttpStatus.OK);
     }
 }

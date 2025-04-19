@@ -21,7 +21,21 @@ public interface ICoursesServices {
 
     CoursesDTO getCoursesByName(String courseName);
 
-//    void deleteTeacher_course(Long id);
+    List<CoursesDTO> getAllCoursesByDepartment(String department);
 
     List<CoursesDTO> getAllCoursesByTeacher_id(Long id);
+
+    List<CoursesDTO> getAllCoursesByTeacherCode(String teacher_code);
+
+    List<CoursesDTO> getAllCoursesByStudentId(Long student_id);
+
+    List<CoursesDTO> getAllCoursesByStudentCode(String student_code);
+
+    List<CoursesDTO> getAllCoursesByResultsId(Long result_id);
+
+    List<CoursesDTO> getAllCoursesByAssignmentId(Long assignment_id);
+
+    List<CoursesDTO> getAllCoursesByClassesId(Long class_id);
+
+    List<CoursesDTO> getAllCoursesByClassesName(String class_name);
 }

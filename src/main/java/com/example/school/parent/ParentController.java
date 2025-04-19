@@ -60,9 +60,4 @@ public class ParentController {
         parentServices.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping(path = "/getStudentByParentId/{id}")
-    public  ResponseEntity<List<StudentDTO>> getStudentByParentId(@PathVariable final Long parentId){
-        return new ResponseEntity<>(parentServices.getStudentByParentId(parentId),HttpStatus.OK);
-    }
 }

@@ -2,12 +2,17 @@ package com.example.school.courses;
 
 import java.util.List;
 
+import com.example.school.assignment.AssignmentDTO;
+import com.example.school.classes.ClassesDTO;
+import com.example.school.result.ResultDTO;
+import com.example.school.student.StudentDTO;
 import com.example.school.teacher.TeacherDTO;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 public class CoursesDTO {
     Long id;
@@ -15,4 +20,8 @@ public class CoursesDTO {
     String course_code;
     String department;
     List<TeacherDTO> teachers;
+    List<StudentDTO> students;
+    List<ResultDTO> results;
+    List<AssignmentDTO> assignments;
+    List<ClassesDTO> classes;
 }
