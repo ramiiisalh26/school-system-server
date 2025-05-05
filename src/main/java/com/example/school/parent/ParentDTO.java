@@ -20,5 +20,4 @@ public class ParentDTO {
     String email;
     String phone;
     AddressDTO address;
-    List<StudentDTO> students;
 }

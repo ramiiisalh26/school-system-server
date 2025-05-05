@@ -25,6 +25,8 @@ public interface IStudentServices {
 
     Optional<StudentDTO> getByStudentCode(String student_code);
 
+    StudentChartApi getBoysAndGirlsCount();
+
     List<StudentDTO> getStudentByParentId(Long id);
 
 }

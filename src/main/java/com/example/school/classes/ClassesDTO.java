@@ -25,9 +25,5 @@ public class ClassesDTO {
     LocalDate day;
     String semester;
     String status;
-    List<CoursesDTO> courses;
-    List<TeacherDTO> teacher;
-    List<StudentDTO> student;
-    List<ResultDTO> result;
     // Teacher teacher_id;
 }

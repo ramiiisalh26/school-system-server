@@ -19,9 +19,4 @@ public class CoursesDTO {
     String name;
     String course_code;
     String department;
-    List<TeacherDTO> teachers;
-    List<StudentDTO> students;
-    List<ResultDTO> results;
-    List<AssignmentDTO> assignments;
-    List<ClassesDTO> classes;
 }

@@ -77,4 +77,9 @@ public class StudentController {
     public  ResponseEntity<List<StudentDTO>> getStudentByParentId(@PathVariable final Long parentId){
         return new ResponseEntity<>(IstudentServices.getStudentByParentId(parentId),HttpStatus.OK);
     }
+
+    @GetMapping(path = "/getBoysAndGirlsCount")
+    public ResponseEntity<StudentChartApi> getBoysAndGirlsCount(){
+        return new ResponseEntity<>(IstudentServices.getBoysAndGirlsCount(),HttpStatus.OK);
+    }
 }

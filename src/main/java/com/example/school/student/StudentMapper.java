@@ -20,7 +20,8 @@ public class StudentMapper {
                 .email(studentDTO.getEmail())
                 .grade(studentDTO.getGrade())
                 .photo(studentDTO.getPhoto())
-                .classes(studentDTO.getClasses() == null ? new ArrayList<>() : studentDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()))
+                .gender(studentDTO.getGender())
+//                .classes(studentDTO.getClasses() == null ? new ArrayList<>() : studentDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()))
                 .address(AddressMapper.fromDTOToEntity(studentDTO.getAddress()))
                 .build();
     }
@@ -36,9 +37,10 @@ public class StudentMapper {
                 .student_id(student.getStudent_id())
                 .email(student.getEmail())
                 .address(AddressMapper.fromEntityToDTO(student.getAddress()))
-                .classes(student.getClasses() == null ? new ArrayList<>() : student.getClasses().stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList()))
-                .results(student.getResults().stream().map(ResultMapper::fromEntityToDTO).collect(Collectors.toList()))
-                .assignments(student.getAssignments().stream().map(AssignmentMapper::fromEntityToDTO).collect(Collectors.toList()))
+                .gender(student.getGender())
+//                .classes(student.getClasses() == null ? new ArrayList<>() : student.getClasses().stream().map(ClassesMapper::fromEntityToDTO).collect(Collectors.toList()))
+//                .results(student.getResults().stream().map(ResultMapper::fromEntityToDTO).collect(Collectors.toList()))
+//                .assignments(student.getAssignments().stream().map(AssignmentMapper::fromEntityToDTO).collect(Collectors.toList()))
                 .build();
     }
 }

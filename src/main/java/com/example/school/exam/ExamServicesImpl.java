@@ -129,4 +129,9 @@ public class ExamServicesImpl implements IExamServices{
         List<Exam> exams = IexamRepositry.getExamByCourseCode(course_code);
         return exams.stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ExamDTO> getExamByCourseName(String course_name) {
+        return IexamRepositry.getExamByCourseName(course_name).stream().map(ExamMapper::fromEntityToDTO).collect(Collectors.toList());
+    }
 }

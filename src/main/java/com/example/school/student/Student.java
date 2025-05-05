@@ -2,13 +2,13 @@ package com.example.school.student;
 
 import com.example.school.address.Address;
 import com.example.school.assignment.Assignment;
+import com.example.school.attendance.Attendance;
 import com.example.school.classes.Classes;
 
 import com.example.school.courses.Courses;
 import com.example.school.parent.Parent;
 import com.example.school.result.Result;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -79,6 +79,9 @@ public class Student {
     )
     private String phone;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Column(
         name = "grade"
     )
@@ -116,4 +119,7 @@ public class Student {
     @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Assignment> assignments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student",fetch = FetchType.LAZY)
+    private List<Attendance> attendances = new ArrayList<>();
 }

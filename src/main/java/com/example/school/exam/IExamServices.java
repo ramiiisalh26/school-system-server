@@ -25,4 +25,5 @@ public interface IExamServices {
 
     List<ExamDTO> getExamsByCourseCode(String course_code);
 
+    List<ExamDTO> getExamByCourseName(String course_name);
 }

@@ -22,7 +22,6 @@ public class TeacherDTO {
     String email;
     String photo;
     String phone;
-    List<CoursesDTO> courses;
 //    List<ClassesDTO> classes;
     AddressDTO address;
 }

@@ -59,18 +59,23 @@ public class ExamController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    @GetMapping(path = "getExamsByClassName/{class_name}")
+    @GetMapping(path = "/getExamsByClassName/{class_name}")
     public ResponseEntity<List<ExamDTO>> getExamsByClassName(@PathVariable final String class_name){
         return new ResponseEntity<>(IexamServices.getExamsByClassName(class_name),HttpStatus.OK);
     }
 
-    @GetMapping(path = "getExamsByTeacherCode/{teacher_code}")
+    @GetMapping(path = "/getExamsByTeacherCode/{teacher_code}")
     public ResponseEntity<List<ExamDTO>> getExamsByTeacherCode(@PathVariable final String teacher_code){
         return new ResponseEntity<>(IexamServices.getExamsByTeacherCode(teacher_code),HttpStatus.OK);
     }
 
-    @GetMapping(path = "getExamsByCourseCode/{course_code}")
+    @GetMapping(path = "/getExamsByCourseCode/{course_code}")
     public ResponseEntity<List<ExamDTO>> getExamsByCourseCode(@PathVariable final String course_code){
         return new ResponseEntity<>(IexamServices.getExamsByCourseCode(course_code),HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getExamByCourseName/{course_name}")
+    public ResponseEntity<List<ExamDTO>> getExamsByCourseName(@PathVariable final String course_name){
+        return new ResponseEntity<>(IexamServices.getExamByCourseName(course_name),HttpStatus.OK);
     }
 }

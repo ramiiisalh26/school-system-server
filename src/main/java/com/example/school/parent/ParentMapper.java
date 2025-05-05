@@ -17,7 +17,6 @@ public class ParentMapper {
                 .phone(parentDTO.getPhone())
                 .email(parentDTO.getEmail())
                 .address(AddressMapper.fromDTOToEntity(parentDTO.getAddress()))
-                .student(parentDTO.getStudents() == null ? new ArrayList<>() : parentDTO.getStudents().stream().map(StudentMapper::fromDTOToEntity).collect(Collectors.toList()))
                 .build();
     }
 
@@ -30,7 +29,6 @@ public class ParentMapper {
                 .phone(parent.getPhone())
                 .email(parent.getEmail())
                 .address(AddressMapper.fromEntityToDTO(parent.getAddress()))
-                .students(parent.getStudent() == null ? new ArrayList<>() : parent.getStudent().stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList()))
                 .build();
     }
 }

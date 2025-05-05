@@ -134,7 +134,6 @@ public class TeacherServicesImpl implements ITeacherServices{
         Address gterAddress = IaddressRepositry.findById(teacherDTO.getAddress().getId()).get();
 
 //        teacher.setClasses(teacherDTO.getClasses().stream().map(ClassesMapper::fromDTOToEntity).collect(Collectors.toList()));
-        teacher.setCourses(teacherDTO.getCourses().stream().map(CoursesMapper::fromDTOToEntity).collect(Collectors.toList()));
 
         Address address = Address.builder()
                 .state(teacherDTO.getAddress().getState())

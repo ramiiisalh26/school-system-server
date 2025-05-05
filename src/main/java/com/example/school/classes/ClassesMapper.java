@@ -29,10 +29,6 @@ public class ClassesMapper {
                 .grade(classes.getGrade())
                 .super_visor(classes.getSuper_visor())
                 .status(Class_Status.ACTIVE.toString())
-                .teacher(classes.getTeacher() == null ? new ArrayList<>() : classes.getTeacher().stream().map(TeacherMapper::fromEntityToDTO).collect(Collectors.toList()))
-                .courses(classes.getCourses() == null ? new ArrayList<>() : classes.getCourses().stream().map(CoursesMapper::fromEntityToDTO).collect(Collectors.toList()))
-                .student(classes.getStudent() == null ? new ArrayList<>() : classes.getStudent().stream().map(StudentMapper::fromEntityToDTO).collect(Collectors.toList()))
-                .result(classes.getResults() == null ? new ArrayList<>(): classes.getResults().stream().map(ResultMapper::fromEntityToDTO).collect(Collectors.toList()))
                 .build();
     }
 }

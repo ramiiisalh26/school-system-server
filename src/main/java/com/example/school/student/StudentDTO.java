@@ -24,11 +24,8 @@ public class StudentDTO {
     String last_name;
     String email;
     String photo;
+    Gender gender;
     String phone;
     int grade;
-    List<ClassesDTO> classes;
-    List<CoursesDTO> courses;
-    List<ResultDTO> results;
-    List<AssignmentDTO> assignments;
     AddressDTO address;
 }

@@ -17,7 +17,7 @@ public class SMSNotification implements INotification {
     }
 
     @Override
-    public void sendVerification(String toEmail, String verifCode) {
+    public void sendVerification(String toEmail, String verifyCode) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'sendVerification'");
     }

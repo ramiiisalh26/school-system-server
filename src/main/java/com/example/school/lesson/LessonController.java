@@ -59,20 +59,20 @@ public class LessonController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = "getLessonByCourseCode/{course_code}")
-    public ResponseEntity<List<LessonDTO>> getLessonByCourseCode(@PathVariable final String course_code){
+    @GetMapping(path = "/getLessonsByCourseCode/{course_code}")
+    public ResponseEntity<List<LessonDTO>> getLessonsByCourseCode(@PathVariable final String course_code){
        List<LessonDTO> lessonDTOS = IlessonServices.getLessonByCourseCode(course_code);
        return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
     }
 
-    @GetMapping(path = "getLessonByClassName/{class_name}")
-    public ResponseEntity<List<LessonDTO>> getLessonByClassName(@PathVariable final String class_name){
+    @GetMapping(path = "/getLessonsByClassName/{class_name}")
+    public ResponseEntity<List<LessonDTO>> getLessonsByClassName(@PathVariable final String class_name){
         List<LessonDTO> lessonDTOS = IlessonServices.getLessonByClassName(class_name);
         return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
     }
 
-    @GetMapping(path = "getLessonByTeacherCode/{teacher_code}")
-    public ResponseEntity<List<LessonDTO>> getLessonByTeacherCode(@PathVariable final String teacher_code){
+    @GetMapping(path = "/getLessonsByTeacherCode/{teacher_code}")
+    public ResponseEntity<List<LessonDTO>> getLessonsByTeacherCode(@PathVariable final String teacher_code){
         List<LessonDTO> lessonDTOS = IlessonServices.getLessonByTeacherCode(teacher_code);
         return new ResponseEntity<>(lessonDTOS,HttpStatus.OK);
     }

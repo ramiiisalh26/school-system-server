@@ -17,4 +17,7 @@ public interface IStudentRepositry extends JpaRepository<Student,Long>{
 
     @Query("SELECT s FROM Student s JOIN s.parents p WHERE p.id = :id")
     List<Student> getStudentByParentId(Long id);
+
+    @Query("SELECT s.gender FROM Student s")
+    List<String> getBoysAndGirlsCount();
 }

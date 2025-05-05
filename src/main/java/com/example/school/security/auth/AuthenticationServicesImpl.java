@@ -79,7 +79,7 @@ public class AuthenticationServicesImpl implements IAuthenticationServices{
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         savedUserToken(user,accessToken);
-
+        
         return AuthenticationResponse.builder()
             .message("signup is successful")
             .accessToken(accessToken)

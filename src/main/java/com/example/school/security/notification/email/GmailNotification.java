@@ -26,6 +26,7 @@ public class GmailNotification implements INotification{
     @Override
     @Async
     public void send(String to,String subject,String message) {
+//        Integer n = Integer.v
         try {
             SimpleMailMessage smm = new SimpleMailMessage();
             smm.setFrom("abdelrhmansasalh@gmail.comemail");
@@ -40,13 +41,13 @@ public class GmailNotification implements INotification{
     }
 
     @Override
-    public void sendVerification(String toEmail, String verifCode) {
+    public void sendVerification(String toEmail, String verifyCode) {
         try {
             SimpleMailMessage smm = new SimpleMailMessage();
             smm.setFrom("abdelrhmansasalh@gmail.com");
             smm.setTo(toEmail);
             smm.setSubject("Email Verification Code");
-            smm.setText("Your verification code is _!_ : " + verifCode);
+            smm.setText("Your verification code is _!_ : " + verifyCode);
             System.out.println(smm);
             gmailMailSender.send(smm);
         } catch (Exception e) {

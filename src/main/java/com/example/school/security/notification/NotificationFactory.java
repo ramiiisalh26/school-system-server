@@ -23,15 +23,11 @@ public class NotificationFactory {
     }
 
     public INotification createNotification(String type){
-        switch (type.toUpperCase()) {
-            case "GMAIL":
-                return gmailNotification;
-            case "OUTLOOK":
-                return outlookNotification;
-            case "SMS":
-                return smsNotification;
-            default:
-                throw new IllegalArgumentException("Unkown notification type: " + type);
-        }
+        return switch (type.toUpperCase()) {
+            case "GMAIL" -> gmailNotification;
+            case "OUTLOOK" -> outlookNotification;
+            case "SMS" -> smsNotification;
+            default -> throw new IllegalArgumentException("Unknown notification type: " + type);
+        };
     }
 }

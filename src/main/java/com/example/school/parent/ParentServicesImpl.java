@@ -90,10 +90,6 @@ public class ParentServicesImpl implements IParentServices {
 
         Address savedAddress = IaddressRepositry.save(address);
 
-        List<Student> students = parentDTO.getStudents().stream()
-                .map(student -> IstudentRepositry.getByStudentCode(student.getStudent_id()))
-                .toList();
-
         Parent parent = Parent.builder()
                 .first_name(parentDTO.getFirst_name())
                 .middle_name(parentDTO.getMiddle_name())
@@ -101,7 +97,6 @@ public class ParentServicesImpl implements IParentServices {
                 .email(parentDTO.getEmail())
                 .phone(parentDTO.getPhone())
                 .address(savedAddress)
-                .student(students)
                 .build();
 
         IparentRepositry.save(parent);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.school.assignment.Assignment;
+import com.example.school.attendance.Attendance;
 import com.example.school.classes.Classes;
 import com.example.school.result.Result;
 import com.example.school.student.Student;
@@ -69,4 +70,7 @@ public class Courses {
     )
     @JsonBackReference
     private List<Classes> classes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+    private List<Attendance> attendances = new ArrayList<>();
 }

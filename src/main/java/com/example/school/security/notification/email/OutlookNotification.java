@@ -41,13 +41,13 @@ public class OutlookNotification implements INotification{
     }
 
     @Override
-    public void sendVerification(String toEmail, String verifCode) {
+    public void sendVerification(String toEmail, String verifyCode) {
         try {
             MimeMessage mimeMessage = outlookMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true);
             helper.setTo(toEmail);
             helper.setSubject("Email Verification Code");
-            helper.setText("Your verification code is _!_ : " + verifCode);
+            helper.setText("Your verification code is _!_ : " + verifyCode);
             helper.setFrom("your-outlook-email@outlook.com");
             outlookMailSender.send(mimeMessage);
         } catch (Exception e) {

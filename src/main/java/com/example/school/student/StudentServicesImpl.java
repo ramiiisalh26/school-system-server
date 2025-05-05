@@ -2,16 +2,15 @@ package com.example.school.student;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.example.school.address.*;
 import com.example.school.assignment.IAssignmentRepository;
 import com.example.school.classes.*;
 //import com.example.school.security.cache.RedisStudentCacheService;
-import com.example.school.courses.Courses;
-import com.example.school.courses.CoursesDTO;
-import com.example.school.courses.CoursesMapper;
 import com.example.school.parent.IParentRepositry;
 import com.example.school.result.IResultRepositry;
 import com.example.school.security.token.ITokenServices;
@@ -78,7 +77,7 @@ public class StudentServicesImpl implements IStudentServices{
         if (studentDTO == null) {
             throw new RuntimeException("Student must be provided");
         }
-
+        System.out.println(studentDTO);
         Student student = StudentMapper.fromDTOToEntity(studentDTO);
 
         int currentYear = Year.now().getValue();
@@ -96,27 +95,22 @@ public class StudentServicesImpl implements IStudentServices{
                 .role(Role.STUDENT)
                 .build();
 
-        User savedUser = IuserServices.signUp(user);
-
         Address address = Address.builder()
                 .city(student.getAddress().getCity())
                 .country(student.getAddress().getCountry())
                 .street(student.getAddress().getStreet())
                 .zip(student.getAddress().getZip())
                 .state(student.getAddress().getState())
-                .user(savedUser)
                 .build();
 
-        Address savedAddress = IaddressRepositry.save(address);
-
-        student.setAddress(savedAddress);
-
-        List<Classes> classes = student.getClasses().stream().map(classed -> IclassesRepositry.getClassesByName(classed.getName())).collect(Collectors.toList());
-
-        if (classes.isEmpty()) throw new RuntimeException("Classes Must be provided");
-
-        student.setClasses(classes);
-
+//        student.setAddress(savedAddress);
+//        List<Classes> classes = student.getClasses().stream().map(classed -> IclassesRepositry.getClassesByName(classed.getName())).collect(Collectors.toList());
+//        if (classes.isEmpty()) throw new RuntimeException("Classes Must be provided")
+//        student.setClasses(classes);
+        User savedUser = IuserServices.signUp(user);
+        address.setUser(savedUser);
+        IaddressRepositry.save(address);
+        student.setAddress(address);
         IstudentRepositry.save(student);
     }
 
@@ -197,10 +191,10 @@ public class StudentServicesImpl implements IStudentServices{
         address.setState(studentDTO.getAddress().getState());
         student.setAddress(address);
 
-        student.setClasses(studentDTO.getClasses().stream()
-                        .map(classesDTO -> IclassesRepositry.findById(classesDTO.getId())
-                        .orElseThrow(() -> new RuntimeException( "Class with ID " + classesDTO.getId() + " not found")))
-                        .collect(Collectors.toList()));
+//        student.setClasses(studentDTO.getClasses().stream()
+//                        .map(classesDTO -> IclassesRepositry.findById(classesDTO.getId())
+//                        .orElseThrow(() -> new RuntimeException( "Class with ID " + classesDTO.getId() + " not found")))
+//                        .collect(Collectors.toList()));
 
 
         student.setFirst_name(studentDTO.getFirst_name());
@@ -221,6 +215,26 @@ public class StudentServicesImpl implements IStudentServices{
     public Optional<StudentDTO> getByStudentCode(String student_code) {
         Optional<Student> student = Optional.ofNullable(IstudentRepositry.getByStudentCode(student_code));
         return student.map(StudentMapper::fromEntityToDTO);
+    }
+
+    @Override
+    public StudentChartApi getBoysAndGirlsCount() {
+        List<String> gendersValue = IstudentRepositry.getBoysAndGirlsCount();
+        AtomicInteger boys = new AtomicInteger();
+        AtomicInteger girls = new AtomicInteger();
+        gendersValue.forEach((gender) -> {
+            if (gender.equals("MALE")) {
+                boys.getAndIncrement();
+            }else {
+                girls.getAndIncrement();
+            }
+       });
+
+        return StudentChartApi.builder()
+                .boys_count(boys.get())
+                .girls_count(girls.get())
+                .total_count(gendersValue.size())
+                .build();
     }
 
     @Override
